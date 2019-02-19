@@ -2,9 +2,8 @@
 Dashboard for ResNet
 
 Current Stuff:
-- [x] Choose stack (Flask, JavaScript, Pusher)
-- [ ] Draw out data flow for the app (JS->Flask->Pusher)
-- [ ] Figure out how Pusher reallly works
+- [x] Choose stack (Flask + jQuery)
+- [ ] Draw out data flow for the app (Flask->Python->jQuery)
 - [ ] Figure out how to use WhenIWork API
 - [ ] Figure out how to use ServiceNow API
 
