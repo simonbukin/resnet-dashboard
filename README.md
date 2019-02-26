@@ -4,8 +4,8 @@ Dashboard for ResNet
 Current Stuff:
 - [x] Choose stack (Flask + jQuery)
 - [x] Draw out data flow for the app (Flask->Python->jQuery)
-- [ ] Figure out how to use ServiceNow API
-- [ ] Figure out how to use WhenIWork API
+- [ ] Figure out how to use ServiceNow API https://developer.servicenow.com/app.do#!/rest_api_doc?v=london&id=c_TableAPI
+- [ ] Figure out how to use WhenIWork API http://dev.wheniwork.com/
 
 How to actually launch the website:
 1. Make sure you have pipenv installed, alongside Python 3.6.4. You should be able to to run "pipenv install" in the project directory to install dependencies.
