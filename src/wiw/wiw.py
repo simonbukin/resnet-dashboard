@@ -75,11 +75,15 @@ def get_shifts(in_json):
 def on_shift(shifts, users):
     # array of shifts that are active at the current time
     shifts_now = [shift for shift in shifts if time_in_range(shift.start_dt, shift.end_dt, datetime.now(timezone.utc))]
+    users_on_shift = []
+    # return shifts_now
     for shift in shifts_now:
         # get user from shift object by id
         on_shift = next((x for x in users if shift.user_id == x.user_id), None)
         if on_shift is not None:
-            print ('{} {}'.format(shift, on_shift))
+            users_on_shift.append(on_shift)
+            # print ('{} {}'.format(shift, on_shift))
+    return users_on_shift
 
 """ pickle the given json """
 def pickle_wiw(json):
@@ -93,10 +97,9 @@ def open_pickle(filename):
         data = pickle.load(pkl)
     return data
 
-# wiw = wiw_shift_json()
-# users = get_users(wiw)
-# shifts = get_shifts(wiw)
-#
-# on_shift(shifts, users)
-#
-# pickle_wiw(wiw_shift_json())
+def generate_new_pickle():
+    wiw = wiw_shift_json()
+    users = get_users(wiw)
+    shifts = get_shifts(wiw)
+    on_shift(shifts, users)
+    pickle_wiw(wiw_shift_json())
