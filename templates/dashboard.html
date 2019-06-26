@@ -3,42 +3,64 @@
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans:600" rel="stylesheet">
       <title>Dashboard</title>
     </head>
     <body>
-      <section class="hero">
-        <div class="hero-body">
-          <div class="container">
-            <h1 class="title">
-              ResNet Dashboard
-            </h1>
-            <h2 class="subtitle">
-              Don't forget to clock in
-            </h2>
-          </div>
-        </div>
-      </section>
-
-      <div id=shifts>?</div>
-
       <nav class='level'>
-        <div id=shifts-rcc class='level-left'>
+        <div class="level-left">
+            <figure class="image is-128x128">
+              <img src="https://avatars.sched.co/0/AA/3010208/avatar.jpg?1c3">
+            </figure>
+            <h1 class='title is-1'>ResNet</h1>
         </div>
-        <div id=shifts-stevenson class='level-right'>
+        <div>
+          <h2 class='title is-4'>Don't forget to clock in</h2>
         </div>
       </nav>
 
-      <table class="table">
-        <thead>
-          <tr>
-            <th><abbr title="task">Task</abbr></th>
-            <!-- <th><abbr title="description">Description</abbr></th> -->
-          </tr>
-        </thead>
-        <tbody id=tasks>
+      <nav class='level'>
+        <div class='level-left'>
+          <div id=shifts-rcc class="columns">
 
-        </tbody>
-      </table>
+          </div>
+        </div>
+        <div class='level-right'>
+          <div id=shifts-stevenson class="columns">
+
+          </div>
+        </div>
+      </nav>
+
+      <div class="columns">
+        <div class="column is-narrow">
+          <table class="table">
+            <thead>
+              <tr>
+                <th><abbr title="task" class="is-size-4">Technician Tasks</abbr></th>
+              </tr>
+            </thead>
+            <tbody id=tasks>
+            </tbody>
+          </table>
+        </div>
+        <div class="column">
+          <table class="table">
+            <thead>
+              <tr>
+                <th><abbr title="ticket" class="is-size-4">ITR Tickets</abbr></th>
+              </tr>
+            </thead>
+            <tbody id=tickets>
+            </tbody>
+          </table>
+          <figure class="image" style="height:350px; width:350px;">
+            <img src="https://i.imgur.com/9hGJU24.png">
+          </figure>
+        </div>
+      </div>
+
+
 
       <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

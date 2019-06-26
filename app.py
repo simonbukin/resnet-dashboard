@@ -5,6 +5,7 @@ import pickle
 
 from wiw import get_users, get_shifts, on_shift, generate_new_pickle
 from sheets import auth_login, get_sheet_values, auth_get_pickle
+from utils import open_pickle, pickle_file
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -16,25 +17,18 @@ def dashboard():
 
 @app.route('/_loop')
 def loop():
-    out_json = {'wiw-rcc': [], 'wiw-stevenson': [], 'wiw': [], 'sheets': []}
-    # wiw
-    data_wiw = None
+    out_json = {'wiw-rcc': [], 'wiw-stevenson': [], 'sheets': []}
+    # When I Work
     generate_new_pickle()
-    with open('wiw.pickle', 'rb') as pkl:
-        data_wiw = pickle.load(pkl)
+    data_wiw = open_pickle('wiw.pickle')
     users = get_users(data_wiw)
     shifts = get_shifts(data_wiw)
     working = on_shift(shifts, users)
-    # print('rcc: {}'.format(working['rcc']))
-    # print('steve: {}'.format(working['stevenson']))
-    out_json['wiw-rcc'] = [{'name': user.first, 'avatar': user.avatar} for user in working['rcc']]
-    out_json['wiw-stevenson'] = [{'name': user.first, 'avatar': user.avatar} for user in working['stevenson']]
-    # sheets
-    data_sheets = None
+    out_json['wiw-rcc'] = [{'name': (user.first).split()[0], 'avatar': user.avatar} for user in working['rcc']]
+    out_json['wiw-stevenson'] = [{'name': (user.first).split()[0], 'avatar': user.avatar} for user in working['stevenson']]
+    # Google Sheets API
+    data_sheets = open_pickle('sheets.pickle')
     auth_get_pickle()
-    with open('sheets.pickle', 'rb') as pkl:
-        data_sheets = pickle.load(pkl)
-
     # make sure each row is the same length
     for row in data_sheets:
         while len(row) < 9:
@@ -52,7 +46,7 @@ def loop():
                             # 'extra': row[8]
                             } for row in data_sheets[1:]]
 
-    print(out_json)
+    # print(out_json)
 
     return jsonify(out_json)
 

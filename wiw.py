@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from auth.auth import token
 import pickle
 import json
+from utils import pickle_file, open_pickle
 
 locations = '1593586, 3603580'
 rcc_loc = '1593586'
@@ -27,7 +28,7 @@ class User:
     def __repr__(self):
         return '{} {} [{}]'.format(self.first, self.last, self.user_id)
 
-""" Shift object, stores start/end time and user_id """
+""" Shift object, stores start/end time and user_id. start and end _dt are just datetime objects of the start and end times """
 class Shift:
     def __init__(self, start, end, user_id, loc):
         self.start = start
@@ -39,7 +40,6 @@ class Shift:
             self.loc = 'rcc'
         else:
             self.loc = 'stevenson'
-
 
     def __repr__(self):
         return '{} -> {} {} [{}]'.format(self.loc, self.start, self.end, self.user_id)
@@ -58,26 +58,36 @@ def wiw_shift_json():
     # return json of the shift information for the day
     return requests.get(shift_root, params=today_params, headers={"W-Token": token}).json()
 
-""" get When I Work API response of clock ins for the current day """
+""" get When I Work API response of shifts for the current day """
 def wiw_time_json(users):
     # set url to times target
     time_root = root + '2/times'
     # return json of time information for the day
     return requests.get(time_root, params=today_params, headers={"W-Token": token}).json()
 
-""" get User objects from raw json """
+""" get clockins from WIW """
+def wiw_clockin_json():
+    wiw = wiw_shift_json()
+    users = get_users(wiw)
+    clockin_root = root + '2/times/user/'
+    for user in users:
+        print(clockin_root + str(user.user_id))
+        req = requests.get(clockin_root + str(user.user_id), headers={"W-Token": token})
+        print(req)
+
+""" convert raw json to array of User objects """
 def get_users(in_json):
     users_json = in_json['users']
     return [User(user['first_name'], user['last_name'], user['id'], user['avatar']['url'][:-3]) for user in users_json]
 
-""" get Shift objects from raw json """
+""" convert raw json to array of Shift objects """
 def get_shifts(in_json):
     shifts_json = in_json['shifts']
     # print(shifts_json)
     # return array of Shift objects made from json
     return [Shift(shift['start_time'], shift['end_time'], shift['user_id'], shift['location_id']) for shift in shifts_json]
 
-""" checks who is currently on shift """
+""" returns list of Users on that are on a Shift """
 def on_shift(shifts, users):
     # array of shifts that are active at the current time
     shifts_now = [shift for shift in shifts if time_in_range(shift.start_dt, shift.end_dt, datetime.now(timezone.utc))]
@@ -93,21 +103,9 @@ def on_shift(shifts, users):
                 users_on_shift['stevenson'].append(on_shift)
     return users_on_shift
 
-""" pickle the given json """
-def pickle_wiw(json):
-    with open('wiw.pickle', 'wb') as pkl:
-        pickle.dump(json, pkl)
-
-""" open pickle given a filename """
-def open_pickle(filename):
-    data = None
-    with open('wiw.pickle', 'rb') as pkl:
-        data = pickle.load(pkl)
-    return data
-
+""" update the wiw.pickle file with new json """
 def generate_new_pickle():
     wiw = wiw_shift_json()
     users = get_users(wiw)
     shifts = get_shifts(wiw)
-    on_shift(shifts, users)
-    pickle_wiw(wiw_shift_json())
+    pickle_file(wiw_shift_json(), 'wiw.pickle')

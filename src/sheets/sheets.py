@@ -48,14 +48,5 @@ def pickle_values(values):
 def auth_get_pickle():
     creds = auth_login()
     values = get_sheet_values(creds)
+    print(values)
     pickle_values(values)
-
-# class Task:
-#     def __init__(self, task, desc, techs, stat, create, finish, due):
-#         self.task = task
-#         self.desc = desc
-#         self.techs = techs
-#         self.status = stat
-#         self.created = create
-#         self.finished = finish
-#         self.due = due
