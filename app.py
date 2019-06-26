@@ -3,8 +3,8 @@ import requests
 import random
 import pickle
 
-from wiw import get_users, get_shifts, on_shift, generate_new_pickle
-from sheets import auth_login, get_sheet_values, auth_get_pickle
+from wiw import wiw_get_users, wiw_get_shifts, wiw_on_shift, wiw_generate_new_pickle
+from sheets import sheet_auth_login, sheet_get_values, sheet_auth_pickle
 from utils import open_pickle, pickle_file
 
 app = Flask(__name__)
@@ -19,16 +19,16 @@ def dashboard():
 def loop():
     out_json = {'wiw-rcc': [], 'wiw-stevenson': [], 'sheets': []}
     # When I Work
-    generate_new_pickle()
+    wiw_generate_new_pickle()
     data_wiw = open_pickle('wiw.pickle')
-    users = get_users(data_wiw)
-    shifts = get_shifts(data_wiw)
-    working = on_shift(shifts, users)
+    users = wiw_get_users(data_wiw)
+    shifts = wiw_get_shifts(data_wiw)
+    working = wiw_on_shift(shifts, users)
     out_json['wiw-rcc'] = [{'name': (user.first).split()[0], 'avatar': user.avatar} for user in working['rcc']]
     out_json['wiw-stevenson'] = [{'name': (user.first).split()[0], 'avatar': user.avatar} for user in working['stevenson']]
     # Google Sheets API
     data_sheets = open_pickle('sheets.pickle')
-    auth_get_pickle()
+    sheet_auth_pickle()
     # make sure each row is the same length
     for row in data_sheets:
         while len(row) < 9:

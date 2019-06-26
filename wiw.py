@@ -68,7 +68,7 @@ def wiw_time_json(users):
 """ get clockins from WIW """
 def wiw_clockin_json():
     wiw = wiw_shift_json()
-    users = get_users(wiw)
+    users = wiw_get_users(wiw)
     clockin_root = root + '2/times/user/'
     for user in users:
         print(clockin_root + str(user.user_id))
@@ -76,19 +76,19 @@ def wiw_clockin_json():
         print(req)
 
 """ convert raw json to array of User objects """
-def get_users(in_json):
+def wiw_get_users(in_json):
     users_json = in_json['users']
     return [User(user['first_name'], user['last_name'], user['id'], user['avatar']['url'][:-3]) for user in users_json]
 
 """ convert raw json to array of Shift objects """
-def get_shifts(in_json):
+def wiw_get_shifts(in_json):
     shifts_json = in_json['shifts']
     # print(shifts_json)
     # return array of Shift objects made from json
     return [Shift(shift['start_time'], shift['end_time'], shift['user_id'], shift['location_id']) for shift in shifts_json]
 
 """ returns list of Users on that are on a Shift """
-def on_shift(shifts, users):
+def wiw_on_shift(shifts, users):
     # array of shifts that are active at the current time
     shifts_now = [shift for shift in shifts if time_in_range(shift.start_dt, shift.end_dt, datetime.now(timezone.utc))]
     users_on_shift = {'rcc': [], 'stevenson': []}
@@ -104,8 +104,8 @@ def on_shift(shifts, users):
     return users_on_shift
 
 """ update the wiw.pickle file with new json """
-def generate_new_pickle():
+def wiw_generate_new_pickle():
     wiw = wiw_shift_json()
-    users = get_users(wiw)
-    shifts = get_shifts(wiw)
+    users = wiw_get_users(wiw)
+    shifts = wiw_get_shifts(wiw)
     pickle_file(wiw_shift_json(), 'wiw.pickle')

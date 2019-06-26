@@ -6,16 +6,15 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 from utils import pickle_file, open_pickle
+from auth.auth import sheet_id
 
-sheet_id = '1gazwxvAyqbV2bjm11h0PHrkocBzvpvU1RlmQfRSLb1A'
-
-""" Code sourced from Google Sheets API tutorial """
+""" Code below sourced from Google Sheets API tutorial """
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 TASKS_RANGE_NAME = 'Tasks!A1:J50'
 
-def auth_login():
+def sheet_auth_login():
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -36,7 +35,7 @@ def auth_login():
             pickle.dump(creds, token)
     return creds
 
-def get_sheet_values(creds):
+def sheet_get_values(creds):
     service = build('sheets', 'v4', credentials=creds)
     # Call the Sheets API
     sheet = service.spreadsheets()
@@ -48,7 +47,7 @@ def get_sheet_values(creds):
 """ end code sourced from Google Sheets API tutorial """
 
 """ authenticate, get sheet values, and pickle the resulting values """
-def auth_get_pickle():
-    creds = auth_login()
-    values = get_sheet_values(creds)
+def sheet_auth_pickle():
+    creds = sheet_auth_login()
+    values = sheet_get_values(creds)
     pickle_file(values[:11], 'sheets.pickle')
