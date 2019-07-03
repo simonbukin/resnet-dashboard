@@ -38,10 +38,9 @@ def calendar_auth_login():
 def calendar_get_events(creds):
     service = build('calendar', 'v3', credentials=creds)
     # Call the Calendar API
+    UTC_OFFSET = datetime.datetime.utcnow() - datetime.datetime.now()
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    then = (datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)).isoformat() + 'Z'
-    # then = (datetime.datetime.utcnow() + timedelta(hours=7)).isoformat() + 'Z'
-    # then = datetime.datetime.utcnow().isoformat()[:-15] + '23:59:59.999999Z' # today until midnight
+    then = ((datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)) + UTC_OFFSET).isoformat() + 'Z'
     events_result = service.events().list(calendarId=calendar_id, timeMin=now, timeMax=then,
                                         maxResults=100, singleEvents=True,
                                         orderBy='startTime').execute()

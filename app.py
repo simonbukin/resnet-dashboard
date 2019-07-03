@@ -19,7 +19,9 @@ def wiw():
     shifts = wiw_get_shifts(data_wiw)
     working = wiw_on_shift(shifts, users)
     rcc = [{'name': (user.first).split()[0], 'avatar': user.avatar, 'loc': 'rcc'} for user in working['rcc']]
+    # rcc += [{'name': 'doge' + str(random.randint(3,40))} for x in range(0,20)]
     stevenson = [{'name': (user.first).split()[0], 'avatar': user.avatar, 'loc': 'stevenson'} for user in working['stevenson']]
+    # stevenson += [{'name': 'doge' + str(random.randint(3,40))} for x in range(0,20)]
     print(rcc+stevenson)
     socketio.emit('wiw', rcc + stevenson, broadcast=True, json=True)
 
