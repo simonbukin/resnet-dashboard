@@ -1,5 +1,6 @@
 from __future__ import print_function
 import datetime
+from datetime import timedelta
 import pickle
 import os.path
 from googleapiclient.discovery import build
@@ -33,11 +34,15 @@ def calendar_auth_login():
             pickle.dump(creds, token)
     return creds
 
+""" returns a set of events from current time until end of day """
 def calendar_get_events(creds):
     service = build('calendar', 'v3', credentials=creds)
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    events_result = service.events().list(calendarId=calendar_id, timeMin=now,
+    then = (datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)).isoformat() + 'Z'
+    # then = (datetime.datetime.utcnow() + timedelta(hours=7)).isoformat() + 'Z'
+    # then = datetime.datetime.utcnow().isoformat()[:-15] + '23:59:59.999999Z' # today until midnight
+    events_result = service.events().list(calendarId=calendar_id, timeMin=now, timeMax=then,
                                         maxResults=100, singleEvents=True,
                                         orderBy='startTime').execute()
     events = events_result.get('items', [])
@@ -52,12 +57,6 @@ def housecall_status(events):
         name = event['summary'].lower();
         if ('house' in name) and ('call' in name):
             count += 1
-            # ind = None
-            # try:
-            #     ind = name.index('inc')
-            # except ValueError:
-            #     print('No ticket number in calendar event')
-            # print(name[:ind], name[ind:ind+10])
     return count
 
 """ """

@@ -1,10 +1,16 @@
 <!doctype html>
   <html>
     <head>
+      <title>Dashboard</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link href="https://fonts.googleapis.com/css?family=Open+Sans:600" rel="stylesheet">
-      <title>Dashboard</title>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+      <!-- <script type="text/javascript" charset="utf-8">
+      </script> -->
     </head>
     <body>
       <nav class='level'>
@@ -14,24 +20,17 @@
             </figure>
             <h1 class='title is-1'>ResNet</h1>
         </div>
-        <div id=housecall class="columns">
-          <!-- <h1 class='title is-1'>Yeeto Poteeto</h1> -->
-        </div>
+        <div id='housecall'></div>
+          <!-- <h3 id='housecall' class='title is-3'>Don't forget to clock in</h3> -->
       </nav>
-
       <nav class='level'>
         <div class='level-left'>
-          <div id=shifts-rcc class="columns">
-
-          </div>
+          <div id='wiw-rcc' class="columns"></div>
         </div>
         <div class='level-right'>
-          <div id=shifts-stevenson class="columns">
-
-          </div>
+          <div id='wiw-stevenson' class="columns"></div>
         </div>
       </nav>
-
       <div class="columns">
         <div class="column is-narrow">
           <table class="table">
@@ -40,8 +39,7 @@
                 <th><abbr title="task" class="is-size-4">Technician Tasks</abbr></th>
               </tr>
             </thead>
-            <tbody id=tasks>
-            </tbody>
+            <tbody id='tasks'></tbody>
           </table>
         </div>
         <div class="column">
@@ -59,14 +57,9 @@
           </figure>
         </div>
       </div>
-
-
-
-      <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
-      <script type=text/javascript>
-        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-      </script>
     </body>
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
   </html>
