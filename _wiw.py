@@ -42,7 +42,7 @@ class Shift:
             self.loc = 'stevenson'
 
     def __repr__(self):
-        return '{} -> {} {} [{}]'.format(self.loc, self.start, self.end, self.user_id)
+        return '{} -> {} to {} [{}]'.format(self.loc, self.start, self.end, self.user_id)
 
 """ checks if a time is within a range """
 def time_in_range(start, end, x):
@@ -109,3 +109,19 @@ def wiw_generate_new_pickle():
     users = wiw_get_users(wiw)
     shifts = wiw_get_shifts(wiw)
     pickle_file(wiw_shift_json(), 'wiw.pickle')
+
+# def test():
+#     wiw = wiw_get_shifts(wiw_shift_json())
+#     day_start_dt = datetime.today().replace(hour=9, minute=45, second=0, microsecond=0)
+#     day_end_dt = datetime.today().replace(hour=17, minute=15, second=0, microsecond=0)
+#     times = [(day_start_dt + timedelta(minutes=x * 15)).replace(tzinfo=None) for x in range(0,31)]
+#     count = []
+#     for interval in times:
+#         on_shift = 0
+#         for shift in wiw:
+#             if time_in_range(shift.start_dt, shift.end_dt, interval):
+#                 on_shift += 1
+#         count.append(on_shift)
+#         print('{}:{} -> {} on shift'.format(interval.hour, interval.minute, on_shift))
+
+# test()

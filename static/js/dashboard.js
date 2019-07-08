@@ -23,6 +23,14 @@ $(document).ready(function(){
     }
   });
 
+  socket.on('itr', function(msg) {
+    console.log("itr", msg);
+    $('#tickets').empty();
+    for(var i = 0; i < msg.length; i++) {
+      $('#tickets').append("<tr><td class='is-size-5'>" + msg[i] + "</td></tr>");
+    }
+  });
+
   socket.on("wiw", function(msg) {
     console.log("wiw", msg);
     $("#wiw-rcc").empty();
