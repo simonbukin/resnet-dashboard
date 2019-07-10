@@ -6,13 +6,13 @@ import requests, random, pickle
 from _wiw import wiw_get_users, wiw_get_shifts, wiw_on_shift, wiw_generate_new_pickle
 from _sheets import sheet_auth_login, sheet_get_values, sheet_auth_pickle
 from _utils import open_pickle, open_json, pickle_file, json_file
-from _calendar import calendar_auth_login, calendar_get_events, calendar_auth_pickle, housecall_status
+from _calendar import calendar_auth_login, calendar_get_events, calendar_auth_json, housecall_status
 from _itr import itr_pickle, itr_json, high_priority
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-fake_data = True
+fake_data = False
 
 def wiw():
     print("wiw job running")
@@ -40,9 +40,9 @@ def sheets():
 
 def calendar():
     print("calendar job running")
-    calendar_auth_pickle()
-    data_calendar = open_pickle('calendar.pickle')
-    socketio.emit('calendar', housecall_status(data_calendar), broadcast=True)
+    calendar_auth_json()
+    data_calendar = open_json('calendar.json')
+    socketio.emit('calendar', housecall_status(data_calendar['events']), broadcast=True)
 
 def itr():
     print('itr job running')

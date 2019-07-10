@@ -8,7 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from auth.auth import calendar_id
 
-from _utils import pickle_file, open_pickle
+from _utils import pickle_file, json_file, open_pickle, open_json
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -59,8 +59,16 @@ def housecall_status(events):
     return count
 
 """ """
-def calendar_auth_pickle():
+def calendar_auth_json():
     creds = calendar_auth_login()
     events = calendar_get_events(creds)
-    print(events)
-    pickle_file(events, 'calendar.pickle')
+    events_edit = {'events':[]}
+    for event in events:
+        new_event = {}
+        params = ['id', 'created', 'summary', 'start', 'end']
+        for param in params:
+            new_event[param] = event[param]
+        events_edit['events'].append(new_event)
+    print(events_edit)
+    json_file(events_edit, 'calendar.json')
+    # pickle_file(events, 'calendar.pickle')
