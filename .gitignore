@@ -1,4 +1,5 @@
 *.pickle
+*.json
 
 # API Keys
 auth.py

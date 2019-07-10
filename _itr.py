@@ -91,8 +91,6 @@ def high_priority():
     in_progress = get_tickets_in_progress()
     in_progress = [(ticket, -1) for ticket in in_progress]
     all_tickets = list(set(unassigned + client_updated + in_progress))
-    # tickets = list(set(unassigned + client_updated + in_progress))
-    # print(tickets)
     ticket_no_dupes = {}
     for ticket in all_tickets:
         if ticket[0] in ticket_no_dupes:
