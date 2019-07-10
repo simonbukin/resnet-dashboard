@@ -1,5 +1,5 @@
 import requests
-from _utils import pickle_file, open_pickle
+from _utils import pickle_file, open_pickle, json_file, open_json
 from auth.auth import user, password
 from datetime import datetime
 
@@ -12,7 +12,8 @@ filters = {'all': 'sysparm_query=assignment_group=55e7ddcd0a0a3d280047abc06ed844
            'client_updated': 'sysparm_query=assignment_group=55e7ddcd0a0a3d280047abc06ed844c8^incident_state=1^ORincident_state=2^ORincident_state=3^ORincident_state=4^ORincident_state=5^incident_state!=6^ORincident_state!=7^sys_updated_bySAMEAScaller_id.user_name',
            'unassigned': 'sysparm_query=active=true^assignment_group=55e7ddcd0a0a3d280047abc06ed844c8^assigned_toISEMPTY'}
 
-# not awaiting client and no update in 3 days
+def itr_json():
+    json_file(high_priority(), 'itr.json')
 
 def itr_pickle():
     pickle_file(high_priority(), 'itr.pickle')
@@ -80,13 +81,26 @@ def get_journal_entries(element_id, journal_type):
     notes = [note for note in resp.json()['result'] if note['element'] == journal_type]
     for note in notes:
         note['sys_created_on'] = datetime.strptime(note['sys_created_on'], '%Y-%m-%d %H:%M:%S')
-        # note['sys_created_on'] = note['sys_created_on'].strftime('%Y-%m-%d %H:%M:%S')
     return notes
 
 def high_priority():
     unassigned = get_tickets(filters['unassigned'])
+    unassigned = [(ticket, 1) for ticket in unassigned]
     client_updated = get_tickets(filters['client_updated'])
+    client_updated = [(ticket, 0) for ticket in client_updated]
     in_progress = get_tickets_in_progress()
-    tickets = list(set(unassigned + client_updated + in_progress))
-    print(tickets)
-    return tickets
+    in_progress = [(ticket, -1) for ticket in in_progress]
+    all_tickets = list(set(unassigned + client_updated + in_progress))
+    # tickets = list(set(unassigned + client_updated + in_progress))
+    # print(tickets)
+    ticket_no_dupes = {}
+    for ticket in all_tickets:
+        if ticket[0] in ticket_no_dupes:
+            if ticket[1] > ticket_no_dupes[ticket[0]]:
+                ticket_no_dupes[ticket[0]] = ticket[1]
+        else:
+            ticket_no_dupes[ticket[0]] = ticket[1]
+    tickets_out = {'tickets':[]}
+    tickets_out['tickets'] = [{'ticket_name':str(key), 'priority':str(val)} for key, val in ticket_no_dupes.items()]
+    print(tickets_out)
+    return tickets_out

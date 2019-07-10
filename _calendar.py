@@ -62,4 +62,5 @@ def housecall_status(events):
 def calendar_auth_pickle():
     creds = calendar_auth_login()
     events = calendar_get_events(creds)
+    print(events)
     pickle_file(events, 'calendar.pickle')

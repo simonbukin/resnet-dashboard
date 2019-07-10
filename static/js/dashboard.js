@@ -9,9 +9,8 @@ $(document).ready(function(){
       "<div class='notification is-danger'>" +
         "<h3 class='title is-3'>There " + ((msg == 1) ? "is 1" : "are " + msg) + " housecall" + ((msg > 1) ? "s today" : " today </h3>") +
       "</div>");
-      // elem.text("There is " + msg + " housecall today");
     } else {
-      // elem.text("Remember to clock in!");
+      elem.append("<p class='is-size-3'>Remember to clock in!</p>");
     }
   });
 
@@ -19,15 +18,27 @@ $(document).ready(function(){
     console.log("sheets", msg);
     $("#tasks").empty();
     for(var i = 0; i < msg.length; i++) {
-      $("#tasks").append("<tr><td class='is-size-5'>" + msg[i]['task'] + "</td></tr>");
+      $("#tasks").append("<tr><td class='is-size-3'>" + msg[i]['task'] + "</td></tr>");
     }
   });
 
   socket.on('itr', function(msg) {
-    console.log("itr", msg);
+    // console.log("itr", msg);
     $('#tickets').empty();
-    for(var i = 0; i < msg.length; i++) {
-      $('#tickets').append("<tr><td class='is-size-5'>" + msg[i] + "</td></tr>");
+    var tickets = msg['tickets'];
+    console.log(tickets);
+    console.log(tickets.length);
+    for(var i = 0; i < tickets.length; i++) {
+      console.log(tickets[i]);
+    }
+    for(var i = 0; i < tickets.length; i++) {
+      if(tickets[i]['priority'] == 1) {
+        $('#tickets').append("<tr><td class='is-size-3 has-background-danger'>" + tickets[i]['ticket_name'] + "</td></tr>");
+      } else if(tickets[i]['priority'] == 0) {
+        $('#tickets').append("<tr><td class='is-size-3 has-background-warning'>" + tickets[i]['ticket_name'] + "</td></tr>");
+      } else {
+        $('#tickets').append("<tr><td class='is-size-3'>" + tickets[i]['ticket_name'] + "</td></tr>");
+      }
     }
   });
 
@@ -40,20 +51,14 @@ $(document).ready(function(){
         $("#wiw-rcc").append(
         "<div class='column is-narrow'>" +
           "<div class='box'>" +
-            "<p class='title is-5'>" + msg[i]['name'] + "</p>" +
-            // "<figure class='image is-128x128'>" +
-            //   "<img class='is-rounded' src=" + msg[i]['avatar'] + ">" +
-            // "</figure>" +
+            "<p class='title is-4'>" + msg[i]['name'] + "</p>" +
           "</div>" +
         "</div>");
       } else {
         $("#wiw-stevenson").append(
         "<div class='column is-narrow'>" +
           "<div class='box'>" +
-            "<p class='title is-5'>" + msg[i]['name'] + "</p>" +
-            // "<figure class='image is-128x128'>" +
-            //   "<img class='is-rounded' src=" + msg[i]['avatar'] + ">" +
-            // "</figure>" +
+            "<p class='title is-4'>" + msg[i]['name'] + "</p>" +
           "</div>" +
         "</div>");
       }

@@ -5,12 +5,14 @@ import requests, random, pickle
 
 from _wiw import wiw_get_users, wiw_get_shifts, wiw_on_shift, wiw_generate_new_pickle
 from _sheets import sheet_auth_login, sheet_get_values, sheet_auth_pickle
-from _utils import open_pickle, pickle_file
+from _utils import open_pickle, open_json, pickle_file, json_file
 from _calendar import calendar_auth_login, calendar_get_events, calendar_auth_pickle, housecall_status
-from _itr import itr_pickle, high_priority
+from _itr import itr_pickle, itr_json, high_priority
 
 app = Flask(__name__)
 socketio = SocketIO(app)
+
+fake_data = True
 
 def wiw():
     print("wiw job running")
@@ -48,12 +50,23 @@ def itr():
     data_itr = open_pickle('itr.pickle')
     socketio.emit('itr', data_itr, broadcast=True, json=True)
 
+def fake_itr():
+    print('fake itr job running')
+    # itr_json()
+    fake_itr_data = open_json('itr.json')
+    # print(fake_itr_data)
+    # fake_itr_data = open_pickle('itr.pickle')
+    socketio.emit('itr', fake_itr_data, broadcast=True, json=True)
+
 #schedule job
 scheduler = BackgroundScheduler()
-scheduler.add_job(wiw, 'interval', seconds=60, max_instances=1)
-scheduler.add_job(sheets, 'interval', seconds=5, max_instances=1)
-scheduler.add_job(calendar, 'interval', seconds=5, max_instances=1)
-scheduler.add_job(itr, 'interval', seconds=10, max_instances=1)
+if(fake_data):
+    scheduler.add_job(fake_itr, 'interval', seconds=3, max_instances=1)
+else:
+    scheduler.add_job(wiw, 'interval', seconds=60, max_instances=1)
+    scheduler.add_job(sheets, 'interval', seconds=5, max_instances=1)
+    scheduler.add_job(calendar, 'interval', seconds=5, max_instances=1)
+    scheduler.add_job(itr, 'interval', seconds=10, max_instances=1)
 
 @app.route('/')
 @app.route('/dashboard')
