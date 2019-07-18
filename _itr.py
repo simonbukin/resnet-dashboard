@@ -51,19 +51,21 @@ def get_client_info(url):
 
 def get_tickets_in_progress():
     tickets = [ticket for ticket in get_tickets_raw(filters['all'])]
-    # print(tickets[0])
+    print(tickets)
     all_tickets = []
     for ticket in tickets:
-        # print(ticket['short_description'])
+        print(ticket['short_description'])
         entries = get_journal_entries(ticket['sys_id'], 'comments')
         client = get_client_info(ticket['caller_id']['link'])
         if client is not None:
             client = client['user_name']
         # print(client)
         # print(entries)
-        recent = sorted(entries, key=lambda entry: entry['sys_created_on'], reverse=True)[0]
-        # print(recent)
-        if recent['sys_created_by'] == client:
+        recent = sorted(entries, key=lambda entry: entry['sys_created_on'], reverse=True)
+
+        if len(recent) == 0:
+            all_tickets.append(ticket)
+        elif recent[0]['sys_created_by'] == client:
             # print('{} === {}'.format(recent['sys_created_by'], ticket['sys_created_by']))
             # print('{} ::: {}'.format(recent['sys_created_by'], recent['value']))
             all_tickets.append(ticket)
@@ -88,9 +90,9 @@ def high_priority():
     unassigned = [(ticket, 1) for ticket in unassigned]
     client_updated = get_tickets(filters['client_updated'])
     client_updated = [(ticket, 0) for ticket in client_updated]
-    in_progress = get_tickets_in_progress()
-    in_progress = [(ticket, -1) for ticket in in_progress]
-    all_tickets = list(set(unassigned + client_updated + in_progress))
+    # in_progress = get_tickets_in_progress()
+    # in_progress = [(ticket, -1) for ticket in in_progress]
+    all_tickets = list(set(unassigned + client_updated))
     ticket_no_dupes = {}
     for ticket in all_tickets:
         if ticket[0] in ticket_no_dupes:
@@ -100,5 +102,5 @@ def high_priority():
             ticket_no_dupes[ticket[0]] = ticket[1]
     tickets_out = {'tickets':[]}
     tickets_out['tickets'] = [{'ticket_name':str(key), 'priority':str(val)} for key, val in ticket_no_dupes.items()]
-    print(tickets_out)
+    # print(tickets_out)
     return tickets_out

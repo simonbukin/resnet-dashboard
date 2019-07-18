@@ -18,7 +18,7 @@ $(document).ready(function(){
     console.log("sheets", msg);
     $("#tasks").empty();
     for(var i = 0; i < msg.length; i++) {
-      $("#tasks").append("<tr><td class='is-size-3'>" + msg[i]['task'] + "</td></tr>");
+      $("#tasks").append("<tr><td class='is-size-3'>" + msg[i]['title'] + "</td></tr>");
     }
   });
 
