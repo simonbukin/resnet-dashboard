@@ -9,6 +9,9 @@ from _utils import open_pickle, open_json, pickle_file, json_file
 from _calendar import calendar_auth_login, calendar_get_events, calendar_auth_json, housecall_status
 from _itr import itr_pickle, itr_json, high_priority
 
+import webbrowser
+from threading import Timer
+
 app = Flask(__name__)
 socketio = SocketIO(app)
 
@@ -72,5 +75,9 @@ def dashboard():
     scheduler.start()
     return render_template('dashboard.html')
 
+def open_browser():
+    webbrowser.open_new('http://0.0.0.0:5000/')
+
 if __name__ == '__main__':
+    # Timer(1, open_browser).start()
     socketio.run(app, host="0.0.0.0")
