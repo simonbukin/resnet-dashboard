@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from auth.auth import token
 import pickle
 import json
-from _utils import pickle_file, open_pickle
+from _utils import pickle_file, json_file, open_pickle, open_json
 
 locations = '1593586, 3603580'
 rcc_loc = '1593586'
@@ -104,24 +104,8 @@ def wiw_on_shift(shifts, users):
     return users_on_shift
 
 """ update the wiw.pickle file with new json """
-def wiw_generate_new_pickle():
+def wiw_generate_new_json():
     wiw = wiw_shift_json()
     users = wiw_get_users(wiw)
     shifts = wiw_get_shifts(wiw)
-    pickle_file(wiw_shift_json(), 'wiw.pickle')
-
-# def test():
-#     wiw = wiw_get_shifts(wiw_shift_json())
-#     day_start_dt = datetime.today().replace(hour=9, minute=45, second=0, microsecond=0)
-#     day_end_dt = datetime.today().replace(hour=17, minute=15, second=0, microsecond=0)
-#     times = [(day_start_dt + timedelta(minutes=x * 15)).replace(tzinfo=None) for x in range(0,31)]
-#     count = []
-#     for interval in times:
-#         on_shift = 0
-#         for shift in wiw:
-#             if time_in_range(shift.start_dt, shift.end_dt, interval):
-#                 on_shift += 1
-#         count.append(on_shift)
-#         print('{}:{} -> {} on shift'.format(interval.hour, interval.minute, on_shift))
-
-# test()
+    json_file(wiw_shift_json(), 'wiw.json')

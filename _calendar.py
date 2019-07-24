@@ -8,7 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from auth.auth import calendar_id
 
-from _utils import pickle_file, json_file, open_pickle, open_json
+from _utils import json_file, open_json
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -71,4 +71,3 @@ def calendar_auth_json():
         events_edit['events'].append(new_event)
     print(events_edit)
     json_file(events_edit, 'calendar.json')
-    # pickle_file(events, 'calendar.pickle')

@@ -1,17 +1,5 @@
 import pickle, json
 
-""" pickle the given json """
-def pickle_file(json, filename):
-    with open('pickles/' + filename, 'wb') as pkl:
-        pickle.dump(json, pkl)
-
-""" open pickle given a filename (automatically prepends to the path to reference pickles folder) """
-def open_pickle(filename):
-    data = None
-    with open('pickles/' + filename, 'rb') as pkl:
-        data = pickle.load(pkl)
-    return data
-
 """ takes in dict and dump's it to a json file """
 def json_file(data, filename):
     with open('json/' + filename, 'w') as json_out:

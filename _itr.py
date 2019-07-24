@@ -1,5 +1,5 @@
 import requests
-from _utils import pickle_file, open_pickle, json_file, open_json
+from _utils import json_file, open_json
 from auth.auth import user, password
 from datetime import datetime
 
@@ -14,9 +14,6 @@ filters = {'all': 'sysparm_query=assignment_group=55e7ddcd0a0a3d280047abc06ed844
 
 def itr_json():
     json_file(high_priority(), 'itr.json')
-
-def itr_pickle():
-    pickle_file(high_priority(), 'itr.pickle')
 
 def get_tickets(filter):
     filter_url = url + filter

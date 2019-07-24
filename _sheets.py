@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-from _utils import pickle_file, json_file, open_pickle, open_json
+from _utils import json_file open_json
 from auth.auth import sheet_id
 
 """ Code below sourced from Google Sheets API tutorial """
@@ -46,7 +46,7 @@ def sheet_get_values(creds):
 
 """ end code sourced from Google Sheets API tutorial """
 
-""" authenticate, get sheet values, and pickle the resulting values """
+""" authenticate, get sheet values, and json the resulting values """
 def sheet_auth_json():
     creds = sheet_auth_login()
     values = sheet_get_values(creds)
