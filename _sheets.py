@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-from _utils import json_file open_json
+from _utils import json_file, open_json
 from auth.auth import sheet_id
 
 """ Code below sourced from Google Sheets API tutorial """
