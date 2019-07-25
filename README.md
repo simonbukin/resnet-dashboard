@@ -1,28 +1,14 @@
 # Resnet Dashboard
 Dashboard for ResNet
 
-Current Stuff:
-- [x] Choose stack (Flask + jQuery)
-- [x] Draw out data flow for the app (Flask->Python->jQuery)
-- [ ] Figure out how to use ServiceNow API https://developer.servicenow.com/app.do#!/rest_api_doc?v=london&id=c_TableAPI
-- [ ] Figure out how to use WhenIWork API http://dev.wheniwork.com/
-
 How to actually launch the website:
 1. Make sure you have pipenv installed, alongside Python 3.6.4. You should be able to to run "pipenv install" in the project directory to install dependencies.
 2. Run "pipenv shell". This opens a virtual environment with all the packages installed.
 3. Run "flask run" to start the website. You can now navigate to the address listed in the output of that command to see the site (for me it was http://127.0.0.1:5000/)
 
-How the main update loop works:
-We want to update information on the main page without reloading it every single time something is changed (like an API call returns a new ticket).
-We start by adding a new route in `app.py`. This is done as follows:
-```python
-@app.route('/_loop')
-def loop():
-  return jsonify(result=some_data_maybe)
-```
-The route is the string inside of `@app.route`. This basically means that this function will be called whenever someone navigates to `www.whatever-this-website-is-named.com/_loop`. In reality, no user will actually do this, but we can use this as a dummy route to trigger a function call in python when we want to.
+## Notes
 
-Next, we go into `dashboard.html`. We need to include some `script` tags at the bottom of the `<body>` for importing/including various files we need.
+How `dashboard.html` works. We need to include some `script` tags at the bottom of the `<body>` for importing/including various files we need.
 
 ```javascript
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>

@@ -11,3 +11,10 @@ def open_json(filename):
     with open('json/' + filename, 'rb') as json_in:
         data = json.load(json_in)
     return data
+
+""" checks if a time is within a range """
+def time_in_range(start, end, x):
+    if start <= end:
+        return start <= x <= end
+    else:
+        return start <= x or x <= end

@@ -12,7 +12,7 @@ from auth.auth import sheet_id
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-TASKS_RANGE_NAME = 'Tasks!A1:J50'
+TASKS_RANGE_NAME = 'Tasks!A1:J50' # define sheet and range on sheet to get
 
 def sheet_auth_login():
     creds = None
@@ -48,11 +48,11 @@ def sheet_get_values(creds):
 
 """ authenticate, get sheet values, and json the resulting values """
 def sheet_auth_json():
-    creds = sheet_auth_login()
-    values = sheet_get_values(creds)
-    sheet_out = {'tasks':[]}
-    for value in values:
-        # print(value)
+    creds = sheet_auth_login() # get GSheet credentials
+    values = sheet_get_values(creds) # get the sheets values
+    sheet_out = {'tasks':[]} # prepare dict for json'ing
+    for value in values: # for each row in the returned values
+        # add a new dict with just the task name, description and status
         sheet_out['tasks'].append({'title': value[0], 'description': value[1], 'status': value[3]})
-    # print(sheet_out['tasks'][1:11])
+    # json the first 10 tasks, not including the header row
     json_file(sheet_out['tasks'][1:11], 'sheets.json')

@@ -3,18 +3,16 @@ from datetime import datetime, timedelta, timezone
 from auth.auth import token
 import pickle
 import json
-from _utils import pickle_file, json_file, open_pickle, open_json
+from _utils import json_file, open_json, time_in_range
 
 locations = '1593586, 3603580'
 rcc_loc = '1593586'
 stevenson_loc = '3603580'
 root = 'https://api.wheniwork.com/'
 
-today_params = {
-                'location_id': locations,
+today_params = {'location_id': locations,
                 'start': datetime.today().strftime('%Y-%m-%d 00:00:00'),
-                'end': datetime.today().strftime('%Y-%m-%d 23:59:59')
-                }
+                'end': datetime.today().strftime('%Y-%m-%d 23:59:59')}
 
 """ User object, stores first/last name, user_id, and avatar_url """
 class User:
@@ -44,13 +42,9 @@ class Shift:
     def __repr__(self):
         return '{} -> {} to {} [{}]'.format(self.loc, self.start, self.end, self.user_id)
 
-""" checks if a time is within a range """
-def time_in_range(start, end, x):
-    if start <= end:
-        return start <= x <= end
-    else:
-        return start <= x or x <= end
 
+
+# TODO check difference between wiw_shift_json and wiw_time_json
 """ get When I Work API response of shifts/users for the current day """
 def wiw_shift_json():
     # set url to shifts target
@@ -58,33 +52,23 @@ def wiw_shift_json():
     # return json of the shift information for the day
     return requests.get(shift_root, params=today_params, headers={"W-Token": token}).json()
 
-""" get When I Work API response of shifts for the current day """
+""" get When I Work API response of times for the current day """
 def wiw_time_json(users):
     # set url to times target
     time_root = root + '2/times'
     # return json of time information for the day
     return requests.get(time_root, params=today_params, headers={"W-Token": token}).json()
 
-""" get clockins from WIW """
-def wiw_clockin_json():
-    wiw = wiw_shift_json()
-    users = wiw_get_users(wiw)
-    clockin_root = root + '2/times/user/'
-    for user in users:
-        print(clockin_root + str(user.user_id))
-        req = requests.get(clockin_root + str(user.user_id), headers={"W-Token": token})
-        print(req)
-
 """ convert raw json to array of User objects """
 def wiw_get_users(in_json):
-    users_json = in_json['users']
+    users_json = in_json['users'] # get just users
+    # return array of User objects from the raw json
     return [User(user['first_name'], user['last_name'], user['id'], user['avatar']['url'][:-3]) for user in users_json]
 
 """ convert raw json to array of Shift objects """
 def wiw_get_shifts(in_json):
-    shifts_json = in_json['shifts']
-    # print(shifts_json)
-    # return array of Shift objects made from json
+    shifts_json = in_json['shifts'] # get just shifts
+    # return array of Shift objects made from raw json
     return [Shift(shift['start_time'], shift['end_time'], shift['user_id'], shift['location_id']) for shift in shifts_json]
 
 """ returns list of Users on that are on a Shift """
@@ -92,7 +76,6 @@ def wiw_on_shift(shifts, users):
     # array of shifts that are active at the current time
     shifts_now = [shift for shift in shifts if time_in_range(shift.start_dt, shift.end_dt, datetime.now(timezone.utc))]
     users_on_shift = {'rcc': [], 'stevenson': []}
-    # return shifts_now
     for shift in shifts_now:
         # get user from shift object by id
         on_shift = next((x for x in users if shift.user_id == x.user_id), None)
@@ -103,9 +86,6 @@ def wiw_on_shift(shifts, users):
                 users_on_shift['stevenson'].append(on_shift)
     return users_on_shift
 
-""" update the wiw.pickle file with new json """
+""" update the wiw.json file with new json """
 def wiw_generate_new_json():
-    wiw = wiw_shift_json()
-    users = wiw_get_users(wiw)
-    shifts = wiw_get_shifts(wiw)
     json_file(wiw_shift_json(), 'wiw.json')
