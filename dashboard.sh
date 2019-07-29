@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script is stored on the Desktop, can be 'executed in Terminal' for autostarting the dashboard
+
 xset s noblank
 xset s off
 xset -dpms

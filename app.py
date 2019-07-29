@@ -64,13 +64,13 @@ def fake_itr():
 """ Job Scheduling """
 scheduler = BackgroundScheduler() # create a scheduler
 if(fake_data): # using fake data only
-    scheduler.add_job(fake_itr, 'interval', seconds=3, max_instances=2)
+    scheduler.add_job(fake_itr, 'interval', seconds=3, max_instances=1)
 else: # only real data
     # configure each job (how often it runs)
-    scheduler.add_job(wiw, 'interval', seconds=60, max_instances=2)
-    scheduler.add_job(sheets, 'interval', seconds=5, max_instances=2)
-    scheduler.add_job(calendar, 'interval', seconds=5, max_instances=2)
-    scheduler.add_job(itr, 'interval', seconds=10, max_instances=2)
+    scheduler.add_job(wiw, 'interval', seconds=60, max_instances=1)
+    scheduler.add_job(sheets, 'interval', seconds=5, max_instances=1)
+    scheduler.add_job(calendar, 'interval', seconds=5, max_instances=1)
+    scheduler.add_job(itr, 'interval', seconds=10, max_instances=1)
 
 # main redirect
 @app.route('/')
