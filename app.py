@@ -9,7 +9,7 @@ from _utils import open_json, json_file
 from _calendar import calendar_auth_login, calendar_get_events, calendar_auth_json, housecall_status
 from _itr import itr_json, high_priority
 
-import webbrowser
+import webbrowser, os
 from threading import Timer
 
 app = Flask(__name__) # Flask instance
@@ -47,12 +47,19 @@ def calendar():
     print('[Google Calendar]: {} housecalls'.format(housecalls))
     socketio.emit('calendar', housecalls, broadcast=True) # send # housecalls on socket
 
+num_tickets = 0
+
 """ ITR Tickets """
 def itr():
+    global num_tickets
     print('[ITR]: Running... ')
     itr_json() # refresh itr.json
     data_itr = open_json('itr.json') # open new data
     print('[ITR]: {} tickets'.format(len(data_itr['tickets'])))
+    if num_tickets < len(data_itr['tickets']):
+        os.system('mpg123 sfx.mp3')
+        print('QUACK!')
+    num_tickets = len(data_itr['tickets'])
     socketio.emit('itr', data_itr, broadcast=True, json=True) # send tickets over socket
 
 """ Fake ITR Data """
