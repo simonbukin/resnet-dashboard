@@ -26,6 +26,13 @@ $(document).ready(function(){
     }
   });
 
+  socket.on('trello', function(msg) {
+    $("#tasks").empty(); // empty tasks div
+    for(var i = 0; i < msg.length; i++) { // add each task title as a table row
+      $('#tasks').append("<tr><td class='is-size-3 has-background-warning'>" + msg[i] + "</td></tr>");
+    }
+  });
+
   // when itr event sent
   socket.on('itr', function(msg) {
     // console.log("itr", msg);

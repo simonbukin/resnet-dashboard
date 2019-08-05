@@ -1,36 +1,36 @@
 {
     "events": [
         {
-            "id": "6tt6865i5gpcge68dmvondllqq",
-            "created": "2019-07-17T20:23:44.000Z",
-            "summary": "Summer Session 1",
+            "id": "0na3mtmp147rnccqsr6qg802al",
+            "created": "2019-07-17T20:24:35.000Z",
+            "summary": "Summer Session 2",
             "start": {
-                "date": "2019-06-24"
+                "date": "2019-07-29"
             },
             "end": {
-                "date": "2019-07-27"
+                "date": "2019-08-31"
             }
         },
         {
-            "id": "0sckp6al479igv8lfm4i2svtaf",
-            "created": "2019-07-11T16:39:52.000Z",
-            "summary": "Cowell Apt Bldg 1 - Scheduled Turnover",
+            "id": "t7b0k3gl97754abnf3lin1gg90",
+            "created": "2019-08-05T14:12:36.000Z",
+            "summary": "Naomi@Kerr AM, RCC PM",
             "start": {
-                "date": "2019-07-25"
+                "date": "2019-08-05"
             },
             "end": {
-                "date": "2019-07-26"
+                "date": "2019-08-06"
             }
         },
         {
-            "id": "5qnb0fqrcf81i3fafacmfusrtp_20190725",
-            "created": "2018-10-11T00:28:21.000Z",
-            "summary": "Water delivery",
+            "id": "5pefglqvrk9l0t1r1rbkee9c1m",
+            "created": "2019-07-16T18:13:16.000Z",
+            "summary": "house call - Drop off car for maintenance",
             "start": {
-                "date": "2019-07-25"
+                "dateTime": "2019-08-05T16:30:00-07:00"
             },
             "end": {
-                "date": "2019-07-26"
+                "dateTime": "2019-08-05T17:30:00-07:00"
             }
         }
     ]
