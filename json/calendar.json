@@ -10,28 +10,6 @@
             "end": {
                 "date": "2019-08-31"
             }
-        },
-        {
-            "id": "t7b0k3gl97754abnf3lin1gg90",
-            "created": "2019-08-05T14:12:36.000Z",
-            "summary": "Naomi@Kerr AM, RCC PM",
-            "start": {
-                "date": "2019-08-05"
-            },
-            "end": {
-                "date": "2019-08-06"
-            }
-        },
-        {
-            "id": "5pefglqvrk9l0t1r1rbkee9c1m",
-            "created": "2019-07-16T18:13:16.000Z",
-            "summary": "house call - Drop off car for maintenance",
-            "start": {
-                "dateTime": "2019-08-05T16:30:00-07:00"
-            },
-            "end": {
-                "dateTime": "2019-08-05T17:30:00-07:00"
-            }
         }
     ]
 }

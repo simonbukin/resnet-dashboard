@@ -58,14 +58,21 @@ def calendar():
     socketio.emit('calendar', housecalls, broadcast=True)
 
 
+num_tickets = 0
+
+
 def itr():
     """Emit ITR ticket data."""
+    global num_tickets
     print('[ITR]: Running... ')
     itr_json()  # refresh itr.json
     data_itr = open_json('itr.json')  # open new data
     print('[ITR]: {} tickets'.format(len(data_itr['tickets'])))
+    if num_tickets < len(data_itr['tickets']):
+        os.system('mpg123 sfx.mp3')
+        print('QUACK!')
+    num_tickets = len(data_itr['tickets'])
     socketio.emit('itr', data_itr, broadcast=True, json=True)
-
 
 def trello():
     """Emit Trello data."""
@@ -74,7 +81,6 @@ def trello():
     data_trello = open_json('trello.json')
     print('[Trello]: {} technician tasks'.format(len(data_trello)))
     socketio.emit('trello', data_trello, broadcast=True, json=True)
-
 
 def fake_itr():
     """Emit fake ITR data for testing."""
