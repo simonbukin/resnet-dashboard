@@ -3,6 +3,8 @@ from flask_socketio import SocketIO, emit
 from apscheduler.schedulers.background import BackgroundScheduler
 import requests
 import random
+import webbrowser
+import os
 
 from _wiw import wiw_get_users, wiw_get_shifts, wiw_on_shift, wiw_generate_new_json
 from _sheets import sheet_auth_login, sheet_get_values, sheet_auth_json
@@ -10,8 +12,6 @@ from _utils import open_json, json_file
 from _calendar import calendar_auth_login, calendar_get_events, calendar_auth_json, housecall_status
 from _itr import itr_json, high_priority
 from _trello import trello_json
-
-import webbrowser
 
 app = Flask(__name__)  # Flask instance
 socketio = SocketIO(app)  # Using Flask SocketIO
