@@ -1,5 +1,4 @@
-from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
+from flask import Flask, render_template from flask_socketio import SocketIO, emit
 from apscheduler.schedulers.background import BackgroundScheduler
 import requests
 import random
@@ -69,8 +68,9 @@ def itr():
     data_itr = open_json('itr.json')  # open new data
     print('[ITR]: {} tickets'.format(len(data_itr['tickets'])))
     if num_tickets < len(data_itr['tickets']):
-        os.system('mpg123 sfx.mp3')
-        print('QUACK!')
+        os.system('mpg123 new.mp3')
+    elif num_tickets > len(data_itr['tickets']):
+        os.system('mpg123 done.mp3')
     num_tickets = len(data_itr['tickets'])
     socketio.emit('itr', data_itr, broadcast=True, json=True)
 
