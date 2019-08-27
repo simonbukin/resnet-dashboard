@@ -5,14 +5,17 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-from _utils import json_file, open_json
+from _utils import json_file
 from auth.auth import sheet_id
 
-""" Code below sourced from Google Sheets API tutorial """
+"""
+Code below sourced from Google Sheets API tutorial.
+"""
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-TASKS_RANGE_NAME = 'Tasks!A1:J50' # define sheet and range on sheet to get
+TASKS_RANGE_NAME = 'Tasks!A1:J50'  # define sheet and range on sheet to get
+
 
 def sheet_auth_login():
     creds = None
@@ -35,6 +38,7 @@ def sheet_auth_login():
             pickle.dump(creds, token)
     return creds
 
+
 def sheet_get_values(creds):
     service = build('sheets', 'v4', credentials=creds)
     # Call the Sheets API
@@ -44,15 +48,21 @@ def sheet_get_values(creds):
     values = result.get('values', [])
     return values
 
-""" end code sourced from Google Sheets API tutorial """
 
-""" authenticate, get sheet values, and json the resulting values """
+"""
+End code sourced from Google Sheets API tutorial.
+"""
+
+
 def sheet_auth_json():
-    creds = sheet_auth_login() # get GSheet credentials
-    values = sheet_get_values(creds) # get the sheets values
-    sheet_out = {'tasks':[]} # prepare dict for json'ing
-    for value in values: # for each row in the returned values
+    """Authenticate, get sheet values, and json the resulting values."""
+    creds = sheet_auth_login()  # get GSheet credentials
+    values = sheet_get_values(creds)  # get the sheets values
+    sheet_out = {'tasks': []}  # prepare dict for json'ing
+    for value in values:  # for each row in the returned values
         # add a new dict with just the task name, description and status
-        sheet_out['tasks'].append({'title': value[0], 'description': value[1], 'status': value[3]})
+        sheet_out['tasks'].append({'title': value[0],
+                                   'description': value[1],
+                                   'status': value[3]})
     # json the first 10 tasks, not including the header row
     json_file(sheet_out['tasks'][1:11], 'sheets.json')

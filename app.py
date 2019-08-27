@@ -1,16 +1,18 @@
 from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 from apscheduler.schedulers.background import BackgroundScheduler
-import requests
-import random
 import webbrowser
 import os
 
-from _wiw import wiw_get_users, wiw_get_shifts, wiw_on_shift, wiw_generate_new_json
-from _sheets import sheet_auth_login, sheet_get_values, sheet_auth_json
-from _utils import open_json, json_file
-from _calendar import calendar_auth_login, calendar_get_events, calendar_auth_json, housecall_status
-from _itr import itr_json, high_priority
+from _wiw import (wiw_get_users,
+                  wiw_get_shifts,
+                  wiw_on_shift,
+                  wiw_generate_new_json)
+from _sheets import sheet_auth_json
+from _utils import open_json
+from _calendar import (calendar_auth_json,
+                       housecall_status)
+from _itr import itr_json
 from _trello import trello_json
 
 app = Flask(__name__)  # Flask instance
@@ -69,11 +71,12 @@ def itr():
     data_itr = open_json('itr.json')  # open new data
     print('[ITR]: {} tickets'.format(len(data_itr['tickets'])))
     if num_tickets < len(data_itr['tickets']):
-        os.system('mpg123 new.mp3')
+        os.system('mpg123 sounds/new_ticket.mp3')
     elif num_tickets > len(data_itr['tickets']):
-        os.system('mpg123 done.mp3')
+        os.system('mpg123 sounds/done_ticket.mp3')
     num_tickets = len(data_itr['tickets'])
     socketio.emit('itr', data_itr, broadcast=True, json=True)
+
 
 def trello():
     """Emit Trello data."""
@@ -82,6 +85,7 @@ def trello():
     data_trello = open_json('trello.json')
     print('[Trello]: {} technician tasks'.format(len(data_trello)))
     socketio.emit('trello', data_trello, broadcast=True, json=True)
+
 
 def fake_itr():
     """Emit fake ITR data for testing."""

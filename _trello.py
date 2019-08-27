@@ -1,5 +1,5 @@
 import requests
-from auth.auth import technician_board_id, trello_key, trello_token, unassigned_list_id
+from auth.auth import trello_key, trello_token, unassigned_list_id
 from _utils import json_file
 
 api_url = 'https://api.trello.com'
