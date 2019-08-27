@@ -10,4 +10,6 @@ unclutter -idle 0.5 -root &
 
 chromium-browser --incognito --start-maximized --kiosk http://0.0.0.0:5000  &
 cd /home/pi/resnet-dashboard
-pipenv run python app.py
+source bin/activate
+python app.py
+# pipenv run python app.py

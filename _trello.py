@@ -4,8 +4,6 @@ from _utils import json_file
 
 api_url = 'https://api.trello.com'
 
-# using /1/lists/{id}/cards?fields=name to get all cards from list
-
 
 def get_unassigned_tasks():
     """Get cards from unassigned tasks board."""
@@ -27,6 +25,3 @@ def get_unassigned_tasks():
 def trello_json():
     """Write Trello data to JSON."""
     json_file(get_unassigned_tasks(), 'trello.json')
-
-
-# print(get_unassigned_tasks())
