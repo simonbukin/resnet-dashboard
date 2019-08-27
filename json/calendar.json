@@ -10,28 +10,6 @@
             "end": {
                 "date": "2019-08-31"
             }
-        },
-        {
-            "id": "17vcl9bp8ibsiqigq8h8es9el4",
-            "created": "2019-07-11T16:49:23.000Z",
-            "summary": "Rachel Carson Apt Bldg 2 - Scheduled Turnover",
-            "start": {
-                "date": "2019-08-08"
-            },
-            "end": {
-                "date": "2019-08-09"
-            }
-        },
-        {
-            "id": "5qnb0fqrcf81i3fafacmfusrtp_20190808",
-            "created": "2018-10-11T00:28:21.000Z",
-            "summary": "Water delivery",
-            "start": {
-                "date": "2019-08-08"
-            },
-            "end": {
-                "date": "2019-08-09"
-            }
         }
     ]
 }
