@@ -3,12 +3,13 @@ import datetime
 from datetime import timedelta
 import pickle
 import os.path
+
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from auth.auth import calendar_id
 
-from _utils import json_file
+from _redis import open_redis_connection
 
 """
 This code is sourced from the tutorial for using the Google Calendar API
@@ -69,6 +70,12 @@ def calendar_get_events(creds):
     return events
 
 
+def authenticate_and_get_events():
+    creds = calendar_auth_login()  # get Google Calendar credentials
+    events = calendar_get_events(creds)  # get all events for today
+    return events
+
+
 def housecall_status(events):
     """Returns how many housecalls there are on the calendar."""
     if not events:  # no events means no housecalls
@@ -82,17 +89,14 @@ def housecall_status(events):
     return count
 
 
-def calendar_auth_json():
-    """Get GCal credentials and write all of todays events to a json file."""
-    creds = calendar_auth_login()  # get Google Calendar credentials
-    events = calendar_get_events(creds)  # get all events for today
-    # filter the events down into info we care about
-    events_edit = {'events': []}
-    for event in events:
-        new_event = {}  # empty event dictionary
-        params = ['id', 'created', 'summary', 'start', 'end']
-        for param in params:  # for each paramter we care about, add to dict
-            new_event[param] = event[param]
-        events_edit['events'].append(new_event)  # append event new_event
-    print(events_edit)
-    json_file(events_edit, 'calendar.json')  # write events to json
+def write_housecalls():
+    redis = open_redis_connection()
+    events = authenticate_and_get_events()
+    num_housecalls = housecall_status(events)
+    redis.set('housecalls', num_housecalls, ex=20)
+
+
+def read_housecalls():
+    redis = open_redis_connection()
+    num_housecalls = redis.get('housecalls')
+    return num_housecalls

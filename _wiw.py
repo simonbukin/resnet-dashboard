@@ -1,7 +1,9 @@
 import requests
 from datetime import datetime, timezone
+
 from auth.auth import token
 from _utils import json_file, time_in_range
+from _redis import open_redis_connection
 
 locations = '1593586, 3603580'
 rcc_loc = '1593586'
@@ -49,23 +51,17 @@ class Shift:
                                             self.user_id)
 
 
+def write_on_shift():
+    """Write who is currently on shift to Redis."""
+    redis = open_redis_connection()
+
+
 def wiw_shift_json():
     """Get When I Work API response of shifts/users for the current day."""
-    # TODO check difference between wiw_shift_json and wiw_time_json
     # set url to shifts target
     shift_root = root + '2/shifts'
     # return json of the shift information for the day
     return requests.get(shift_root,
-                        params=today_params,
-                        headers={"W-Token": token}).json()
-
-
-def wiw_time_json(users):
-    """Get When I Work API response of times for the current day."""
-    # set url to times target
-    time_root = root + '2/times'
-    # return json of time information for the day
-    return requests.get(time_root,
                         params=today_params,
                         headers={"W-Token": token}).json()
 

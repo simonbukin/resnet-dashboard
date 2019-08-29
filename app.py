@@ -1,8 +1,8 @@
+import os
+
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from apscheduler.schedulers.background import BackgroundScheduler
-import webbrowser
-import os
 
 from _wiw import (wiw_get_users,
                   wiw_get_shifts,
@@ -10,15 +10,13 @@ from _wiw import (wiw_get_users,
                   wiw_generate_new_json)
 from _sheets import sheet_auth_json
 from _utils import open_json
-from _calendar import (calendar_auth_json,
-                       housecall_status)
+from _calendar import (write_housecalls,
+                       read_housecalls)
 from _itr import itr_json
-from _trello import trello_json
+from _trello import read_unassigned_tasks, write_unassigned_tasks
 
 app = Flask(__name__)  # Flask instance
 socketio = SocketIO(app)  # Using Flask SocketIO
-
-fake_data = False  # flag for using fake ITR data fo testing
 
 
 def wiw():
@@ -53,9 +51,11 @@ def sheets():
 def calendar():
     """Emit Google Calendar Housecall data."""
     print('[Google Calendar]: Running...')
-    calendar_auth_json()  # authenticate and refresh calendar.json
-    data_calendar = open_json('calendar.json')  # open new data
-    housecalls = housecall_status(data_calendar['events'])
+    write_housecalls()
+    # calendar_auth_json()  # authenticate and refresh calendar.json
+    # data_calendar = open_json('calendar.json')  # open new data
+    # housecalls = housecall_status(data_calendar['events'])
+    housecalls = int(read_housecalls())
     print('[Google Calendar]: {} housecalls'.format(housecalls))
     socketio.emit('calendar', housecalls, broadcast=True)
 
@@ -81,29 +81,21 @@ def itr():
 def trello():
     """Emit Trello data."""
     print('[Trello]: Running... ')
-    trello_json()
-    data_trello = open_json('trello.json')
-    print('[Trello]: {} technician tasks'.format(len(data_trello)))
-    socketio.emit('trello', data_trello, broadcast=True, json=True)
-
-
-def fake_itr():
-    """Emit fake ITR data for testing."""
-    print('[Fake ITR]: Running...')
-    fake_itr_data = open_json('fake_itr.json')  # open fake data
-    socketio.emit('itr', fake_itr_data, broadcast=True, json=True)
+    write_unassigned_tasks()
+    tasks = read_unassigned_tasks()
+    # trello_json()
+    # data_trello = open_json('trello.json')
+    print('[Trello]: {} technician tasks'.format(len(tasks)))
+    socketio.emit('trello', tasks, broadcast=True, json=True)
 
 
 """ Job Scheduling """
 scheduler = BackgroundScheduler()  # create a scheduler
-if(fake_data):  # using fake data only
-    scheduler.add_job(fake_itr, 'interval', seconds=3, max_instances=1)
-else:  # only real data
-    # configure each job (how often it runs)
-    scheduler.add_job(wiw, 'interval', seconds=60, max_instances=1)
-    scheduler.add_job(calendar, 'interval', seconds=5, max_instances=1)
-    scheduler.add_job(itr, 'interval', seconds=10, max_instances=1)
-    scheduler.add_job(trello, 'interval', seconds=5, max_instances=1)
+# configure each job (how often it runs)
+scheduler.add_job(wiw, 'interval', seconds=60, max_instances=1)
+scheduler.add_job(calendar, 'interval', seconds=5, max_instances=1)
+scheduler.add_job(itr, 'interval', seconds=10, max_instances=1)
+scheduler.add_job(trello, 'interval', seconds=5, max_instances=1)
 
 
 @app.route('/')  # main redirect
