@@ -1,5 +1,5 @@
 <!doctype html>
-  <html style = 'overflow-y:hidden'>
+  <html style = "overflow-y:hidden">
     <head>
       <title>Dashboard</title>
       <meta charset="utf-8">
@@ -13,22 +13,26 @@
       </script> -->
     </head>
     <body>
-      <nav class='level'>
+      <nav class="level">
         <div class="level-left">
             <figure class="image is-128x128">
               <img src="https://avatars.sched.co/0/AA/3010208/avatar.jpg?1c3">
             </figure>
-            <h1 class='title is-1'>ResNet</h1>
+            <h1 class="title is-1">ResNet</h1>
         </div>
-        <div id='housecall'></div>
-          <!-- <h3 id='housecall' class='title is-3'>Don't forget to clock in</h3> -->
+        <div>
+          <a class="button is-info">
+            <span>Sound</span>
+          </a>
+        </div>
+        <div id="housecall"></div>
       </nav>
-      <nav class='level'>
-        <div class='level-left'>
-          <div id='wiw-rcc' class="columns"></div>
+      <nav class="level">
+        <div class="level-left">
+          <div id="wiw-rcc" class="columns"></div>
         </div>
-        <div class='level-right'>
-          <div id='wiw-stevenson' class="columns"></div>
+        <div class="level-right">
+          <div id="wiw-stevenson" class="columns"></div>
         </div>
       </nav>
       <div class="columns">
@@ -39,7 +43,7 @@
                 <th><abbr title="task" class="is-size-2">Technician Tasks</abbr></th>
               </tr>
             </thead>
-            <tbody id='tasks'></tbody>
+            <tbody id="tasks"></tbody>
           </table>
         </div>
         <div class="column">
@@ -49,7 +53,7 @@
                 <th><abbr title="ticket" class="is-size-2">ITR Tickets</abbr></th>
               </tr>
             </thead>
-            <tbody id='tickets'></tbody>
+            <tbody id="tickets"></tbody>
           </table>
         </div>
       </div>
@@ -57,5 +61,5 @@
     <script type=text/javascript>
       $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script src="{{ url_for("static", filename="js/dashboard.js") }}"></script>
   </html>

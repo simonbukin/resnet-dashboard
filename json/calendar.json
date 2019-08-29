@@ -12,25 +12,14 @@
             }
         },
         {
-            "id": "17vcl9bp8ibsiqigq8h8es9el4",
-            "created": "2019-07-11T16:49:23.000Z",
-            "summary": "Rachel Carson Apt Bldg 2 - Scheduled Turnover",
+            "id": "0rl0si6mf90lc1ke748l5o84av",
+            "created": "2019-07-11T16:26:12.000Z",
+            "summary": "Oakes Apartments A13-15 (Frida Kahlo), Stevenson Apts Casa 11  - Scheduled Turnover",
             "start": {
-                "date": "2019-08-08"
+                "date": "2019-08-29"
             },
             "end": {
-                "date": "2019-08-09"
-            }
-        },
-        {
-            "id": "5qnb0fqrcf81i3fafacmfusrtp_20190808",
-            "created": "2018-10-11T00:28:21.000Z",
-            "summary": "Water delivery",
-            "start": {
-                "date": "2019-08-08"
-            },
-            "end": {
-                "date": "2019-08-09"
+                "date": "2019-08-30"
             }
         }
     ]
