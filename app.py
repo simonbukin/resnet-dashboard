@@ -101,7 +101,6 @@ if(fake_data):  # using fake data only
 else:  # only real data
     # configure each job (how often it runs)
     scheduler.add_job(wiw, 'interval', seconds=60, max_instances=1)
-    # scheduler.add_job(sheets, 'interval', seconds=5, max_instances=1)
     scheduler.add_job(calendar, 'interval', seconds=5, max_instances=1)
     scheduler.add_job(itr, 'interval', seconds=10, max_instances=1)
     scheduler.add_job(trello, 'interval', seconds=5, max_instances=1)
@@ -113,11 +112,6 @@ def dashboard():
     """Render Dashboard redirect function."""
     scheduler.start()  # start scheduler
     return render_template('dashboard.html')  # render dashboard
-
-
-def open_browser():
-    """Open browser."""
-    webbrowser.open_new('http://0.0.0.0:5000/')
 
 
 if __name__ == '__main__':
