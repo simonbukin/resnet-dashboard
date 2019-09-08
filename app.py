@@ -1,3 +1,4 @@
+"""Main app file for the dashboard."""
 import os
 
 from flask import Flask, render_template
@@ -8,11 +9,10 @@ from _wiw import (wiw_get_users,
                   wiw_get_shifts,
                   wiw_on_shift,
                   wiw_generate_new_json)
-from _sheets import sheet_auth_json
 from _utils import open_json
 from _calendar import (write_housecalls,
                        read_housecalls)
-from _itr import itr_json
+from _itr import itr_json, read_priority_tickets, write_priority_tickets
 from _trello import read_unassigned_tasks, write_unassigned_tasks
 
 app = Flask(__name__)  # Flask instance
@@ -40,14 +40,6 @@ def wiw():
     socketio.emit('wiw', rcc + stevenson, broadcast=True, json=True)
 
 
-def sheets():
-    """Emit Technician Task data."""
-    print('[Google Sheets]: Running...')
-    sheet_auth_json()  # authenticate and refresh sheets.json
-    data_sheets = open_json('sheets.json')  # open new data
-    socketio.emit('sheets', data_sheets, broadcast=True, json=True)
-
-
 def calendar():
     """Emit Google Calendar Housecall data."""
     print('[Google Calendar]: Running...')
@@ -67,8 +59,8 @@ def itr():
     """Emit ITR ticket data."""
     global num_tickets
     print('[ITR]: Running... ')
-    itr_json()  # refresh itr.json
-    data_itr = open_json('itr.json')  # open new data
+    write_priority_tickets()
+    data_itr = read_priority_tickets()
     print('[ITR]: {} tickets'.format(len(data_itr['tickets'])))
     if num_tickets < len(data_itr['tickets']):
         os.system('mpg123 sounds/new_ticket.mp3')
@@ -83,8 +75,6 @@ def trello():
     print('[Trello]: Running... ')
     write_unassigned_tasks()
     tasks = read_unassigned_tasks()
-    # trello_json()
-    # data_trello = open_json('trello.json')
     print('[Trello]: {} technician tasks'.format(len(tasks)))
     socketio.emit('trello', tasks, broadcast=True, json=True)
 

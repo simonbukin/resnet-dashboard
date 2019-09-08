@@ -1,7 +1,7 @@
+"""Retrieve tasks from Trello."""
 import requests
 
 from auth.auth import trello_key, trello_token, unassigned_list_id
-# from _utils import json_file
 from _redis import open_redis_connection
 
 api_url = 'https://api.trello.com'
@@ -37,8 +37,3 @@ def read_unassigned_tasks():
     unassigned_tasks = redis.lrange('tech_tasks', 0, -1)
     format_tasks = [task.decode('UTF-8') for task in unassigned_tasks]
     return format_tasks
-
-
-# def trello_json():
-#     """Write Trello data to JSON."""
-#     json_file(get_unassigned_tasks(), 'trello.json')

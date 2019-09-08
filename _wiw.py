@@ -1,5 +1,7 @@
-import requests
+"""Get WhenIWork shift information."""
 from datetime import datetime, timezone
+
+import requests
 
 from auth.auth import token
 from _utils import json_file, time_in_range

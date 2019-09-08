@@ -1,7 +1,12 @@
+"""Get tickets from ServiceNow."""
+from datetime import datetime
+import json
+
 import requests
+
 from _utils import json_file
 from auth.auth import user, password
-from datetime import datetime
+from _redis import open_redis_connection
 
 # url for getting incidents (tickets)
 url = "https://ucsc.service-now.com/api/now/table/incident?"
@@ -35,9 +40,9 @@ def itr_json():
     json_file(high_priority(), 'itr.json')
 
 
-def get_tickets(filter):
+def get_tickets(filter_str):
     """Return all the tickets from ITR given a filter."""
-    filter_url = url + filter
+    filter_url = url + filter_str
     # send a request to get tickets matching the given filter
     resp = requests.get(filter_url, auth=(user, password), headers=headers)
     tickets = None
@@ -53,9 +58,9 @@ def get_tickets(filter):
     return tickets
 
 
-def get_tickets_raw(filter):
+def get_tickets_raw(filter_str):
     """Return all the tickets from ITR given a filter, as raw JSON."""
-    filter_url = url + filter
+    filter_url = url + filter_str
     # send a request to get tickets matching the given filter
     resp = requests.get(filter_url, auth=(user, password), headers=headers)
     if(resp.status_code != 200):  # response is not OK, throw error
@@ -97,7 +102,7 @@ def get_tickets_in_progress():
         recent = sorted(entries,
                         key=lambda entry: entry['sys_created_on'],
                         reverse=True)
-        if len(recent) == 0:  # no comments? brand new ticket
+        if not recent:  # no comments? brand new ticket
             in_progress.append(ticket)
         elif recent[0]['sys_created_by'] == client:
             # most recent comment is client? needs response
@@ -170,3 +175,19 @@ def high_priority():
         tickets_out['tickets'].append({'ticket_name': str(key),
                                        'priority': str(val)})
     return tickets_out
+
+
+def write_priority_tickets():
+    """Write high priority tickets to Redis."""
+    redis = open_redis_connection()
+    redis.delete('high_priority_tickets')
+    high_priority_tickets = json.dumps(high_priority())
+    redis.set('high_priority_tickets', high_priority_tickets)
+
+
+def read_priority_tickets():
+    """Read high priority tickets from Redis."""
+    redis = open_redis_connection()
+    high_priority_tickets = json.loads(redis.get('high_priority_tickets'))
+    # format_tickets = [ticket.decode('UTF-8') for ticket in high_priority_tickets]
+    return high_priority_tickets

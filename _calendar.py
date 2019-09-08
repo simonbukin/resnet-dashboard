@@ -1,3 +1,4 @@
+"""Retrieving Google Calendar information."""
 from __future__ import print_function
 import datetime
 from datetime import timedelta
@@ -71,6 +72,7 @@ def calendar_get_events(creds):
 
 
 def authenticate_and_get_events():
+    """Return events from calendar after authentication."""
     creds = calendar_auth_login()  # get Google Calendar credentials
     events = calendar_get_events(creds)  # get all events for today
     return events
@@ -90,6 +92,7 @@ def housecall_status(events):
 
 
 def write_housecalls():
+    """Write number of housecalls to Redis."""
     redis = open_redis_connection()
     events = authenticate_and_get_events()
     num_housecalls = housecall_status(events)
@@ -97,6 +100,9 @@ def write_housecalls():
 
 
 def read_housecalls():
+    """Read number of housecalls from Redis."""
     redis = open_redis_connection()
     num_housecalls = redis.get('housecalls')
     return num_housecalls
+
+calendar_auth_login()
