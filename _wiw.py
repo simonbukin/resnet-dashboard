@@ -1,9 +1,11 @@
 """Get WhenIWork shift information."""
 from datetime import datetime, timezone
+import json
 
 import requests
 
 from auth.auth import token
+from _redis import open_redis_connection
 from _utils import json_file, time_in_range
 from _redis import open_redis_connection
 
@@ -51,11 +53,6 @@ class Shift:
                                             self.start,
                                             self.end,
                                             self.user_id)
-
-
-def write_on_shift():
-    """Write who is currently on shift to Redis."""
-    redis = open_redis_connection()
 
 
 def wiw_shift_json():
@@ -120,3 +117,41 @@ def wiw_on_shift(shifts, users):
 def wiw_generate_new_json():
     """Update the wiw.json file with new json """
     json_file(wiw_shift_json(), 'wiw.json')
+
+
+def filter_location(working, location):
+    """Return users working at a specific location."""
+    users = []
+    for user in working.get('location', []):
+        info = {}
+        info['name'] = user.first.split()[0]
+        info['avatar'] = user.avatar
+        info['loc'] = location
+        users.append(info)
+    return users
+
+
+def get_working():
+    """Return a tuple of those on shift at rcc and stevenson."""
+    data = wiw_shift_json()
+    users = wiw_get_users(data)
+    shifts = wiw_get_shifts(data)
+    working = wiw_on_shift(shifts, users)
+    rcc = filter_location(working, 'rcc')
+    steve = filter_location(working, 'stevenson')
+    return rcc, steve
+
+
+def write_shifts():
+    """Write shift information to Redis."""
+    redis = open_redis_connection()
+    redis.delete('shifts')
+    working = get_working()
+    redis.set(json.dumps(working))
+
+
+def read_shifts():
+    """Read shift information from Redis."""
+    redis = open_redis_connection()
+    working = redis.get('shifts')
+    return json.loads(working)

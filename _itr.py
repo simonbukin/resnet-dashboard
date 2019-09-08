@@ -189,5 +189,4 @@ def read_priority_tickets():
     """Read high priority tickets from Redis."""
     redis = open_redis_connection()
     high_priority_tickets = json.loads(redis.get('high_priority_tickets'))
-    # format_tickets = [ticket.decode('UTF-8') for ticket in high_priority_tickets]
     return high_priority_tickets

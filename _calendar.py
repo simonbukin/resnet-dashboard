@@ -104,5 +104,3 @@ def read_housecalls():
     redis = open_redis_connection()
     num_housecalls = redis.get('housecalls')
     return num_housecalls
-
-calendar_auth_login()
