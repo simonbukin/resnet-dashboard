@@ -1,4 +1,4 @@
-"""Main app file for the dashboard."""
+"""Man app file for the dashboard."""
 import os
 
 from flask import Flask, render_template
@@ -45,15 +45,17 @@ def itr():
     num_tickets = redis.get('num_tickets')
     if not num_tickets:
         num_tickets = 0
+    else:
+        num_tickets = num_tickets.decode('utf-8')
     print('[ITR]: Running... ')
     write_priority_tickets()
     data_itr = read_priority_tickets()
     print('[ITR]: {} tickets'.format(len(data_itr['tickets'])))
-    if num_tickets < len(data_itr['tickets']):
+    if int(num_tickets) < len(data_itr['tickets']):
         os.system('mpg123 sounds/new_ticket.mp3 &')
-    elif num_tickets > len(data_itr['tickets']):
+    elif int(num_tickets) > len(data_itr['tickets']):
         os.system('mpg123 sounds/done_ticket.mp3 &')
-    redis.set('num_tickets', len(data_itr['tickets']))
+    redis.set('num_tickets', len(data_itr['tickets']), ex=30)
     socketio.emit('itr', data_itr, broadcast=True, json=True)
 
 
