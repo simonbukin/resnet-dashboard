@@ -10,5 +10,5 @@ unclutter -idle 0.5 -root &
 
 chromium-browser --incognito --start-maximized --kiosk http://0.0.0.0:5000  &
 cd /home/pi/resnet-dashboard
-source bin/activate
+source env/bin/activate
 python app.py
