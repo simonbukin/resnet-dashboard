@@ -1,15 +1,15 @@
-"""Man app file for the dashboard."""
+"""Main app file for the dashboard."""
 import os
 
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from calendar import (write_housecalls,
-                      read_housecalls)
-from itr import read_priority_tickets, write_priority_tickets
-from trello import read_unassigned_tasks, write_unassigned_tasks
-from redis import open_redis_connection
+from _calendar import (write_housecalls,
+                       read_housecalls)
+from _itr import read_priority_tickets, write_priority_tickets
+from _trello import read_unassigned_tasks, write_unassigned_tasks
+from _redis import open_redis_connection
 
 app = Flask(__name__)  # Flask instance
 socketio = SocketIO(app)  # Using Flask SocketIO
@@ -61,7 +61,7 @@ scheduler.add_job(itr, 'interval', seconds=10, max_instances=1)
 scheduler.add_job(trello, 'interval', seconds=5, max_instances=1)
 
 
-@app.route('/')  # main redirect
+@app.route('/')
 @app.route('/dashboard')
 def dashboard():
     """Render Dashboard redirect function."""
