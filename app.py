@@ -5,29 +5,14 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from _wiw import (wiw_get_users,
-                  wiw_get_shifts,
-                  wiw_on_shift,
-                  read_shifts,
-                  write_shifts)
-from _calendar import (write_housecalls,
-                       read_housecalls)
-from _itr import read_priority_tickets, write_priority_tickets
-from _trello import read_unassigned_tasks, write_unassigned_tasks
-from _redis import open_redis_connection
+from calendar import (write_housecalls,
+                      read_housecalls)
+from itr import read_priority_tickets, write_priority_tickets
+from trello import read_unassigned_tasks, write_unassigned_tasks
+from redis import open_redis_connection
 
 app = Flask(__name__)  # Flask instance
 socketio = SocketIO(app)  # Using Flask SocketIO
-
-
-def wiw():
-    """Emit When I Work data."""
-    print('[When I Work]: Running...')
-    write_shifts()
-    rcc, stevenson = read_shifts()
-    print("[When I Work]: {} at RCC, {} at Stevenson".format(len(rcc),
-                                                             len(stevenson)))
-    socketio.emit('wiw', rcc + stevenson, broadcast=True, json=True)
 
 
 def calendar():
@@ -71,7 +56,6 @@ def trello():
 """Job Scheduling"""
 scheduler = BackgroundScheduler()  # create a scheduler
 # configure each job (how often it runs)
-scheduler.add_job(wiw, 'interval', seconds=60, max_instances=1)
 scheduler.add_job(calendar, 'interval', seconds=5, max_instances=1)
 scheduler.add_job(itr, 'interval', seconds=10, max_instances=1)
 scheduler.add_job(trello, 'interval', seconds=5, max_instances=1)
