@@ -10,4 +10,5 @@ def open_redis_connection():
     """Returns an active database connection to Redis."""
     return redis.Redis(
         host='localhost',
-        port=6379)
+        port=6379,
+        db=0)
