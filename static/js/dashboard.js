@@ -1,5 +1,5 @@
 // initialization
-$(document).ready(function(){
+$(document).ready(function() {
   // connect to Flask socket
   var socket = io.connect("http://" + document.domain + ":" + location.port);
 
@@ -16,6 +16,19 @@ $(document).ready(function(){
       elem.append("<p class='is-size-3'>Remember to clock in!</p>");
     }
   });
+
+  // update water day display
+  socket.on('water', function(msg) {
+    var elem = $('#water');
+    elem.empty();
+    if (msg === true) {
+      elem.append(
+        "<span class='icon has-text-info'>" + 
+          "<i class='fas fa-tint'></i>" + 
+        "</span>"
+      );
+    }
+  })
 
   // when sheet event sent
   socket.on('sheets', function(msg) {

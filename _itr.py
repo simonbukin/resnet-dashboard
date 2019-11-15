@@ -4,7 +4,6 @@ import json
 
 import requests
 
-from _utils import json_file
 from auth.auth import user, password
 from _redis import open_redis_connection
 
@@ -33,11 +32,6 @@ filters = {'all': ('sysparm_query=assignment_group=55e7ddcd0a0a3d280047abc06e'
            'unassigned': ('sysparm_query=active=true^assignment_group='
                           '55e7ddcd0a0a3d280047abc06ed844c8^assigned_t'
                           'oISEMPTY')}
-
-
-def itr_json():
-    """Write all the high priority tickets to itr.json."""
-    json_file(high_priority(), 'itr.json')
 
 
 def get_tickets(filter_str):

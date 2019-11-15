@@ -1,17 +1,14 @@
-"""Man app file for the dashboard."""
+"""Main app file for the dashboard."""
 import os
 
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from _wiw import (wiw_get_users,
-                  wiw_get_shifts,
-                  wiw_on_shift,
-                  read_shifts,
-                  write_shifts)
 from _calendar import (write_housecalls,
-                       read_housecalls)
+                       read_housecalls,
+                       read_water_status,
+                       write_water_status)
 from _itr import read_priority_tickets, write_priority_tickets
 from _trello import read_unassigned_tasks, write_unassigned_tasks
 from _redis import open_redis_connection
@@ -20,23 +17,18 @@ app = Flask(__name__)  # Flask instance
 socketio = SocketIO(app)  # Using Flask SocketIO
 
 
-def wiw():
-    """Emit When I Work data."""
-    print('[When I Work]: Running...')
-    write_shifts()
-    rcc, stevenson = read_shifts()
-    print("[When I Work]: {} at RCC, {} at Stevenson".format(len(rcc),
-                                                             len(stevenson)))
-    socketio.emit('wiw', rcc + stevenson, broadcast=True, json=True)
-
-
 def calendar():
-    """Emit Google Calendar Housecall data."""
+    """Emit Google Calendar data."""
     print('[Google Calendar]: Running...')
     write_housecalls()
     housecalls = int(read_housecalls())
+    write_water_status()
+    status = bool(read_water_status())
+    status_string = 'not' if not status else ''
     print('[Google Calendar]: {} housecalls'.format(housecalls))
+    print(f'[Google Calendar]: It is {status_string} water day')
     socketio.emit('calendar', housecalls, broadcast=True)
+    socketio.emit('water', status, broadcast=True)
 
 
 def itr():
@@ -69,20 +61,19 @@ def trello():
 
 
 """Job Scheduling"""
-scheduler = BackgroundScheduler()  # create a scheduler
+scheduler = BackgroundScheduler()
 # configure each job (how often it runs)
-scheduler.add_job(wiw, 'interval', seconds=60, max_instances=1)
 scheduler.add_job(calendar, 'interval', seconds=5, max_instances=1)
 scheduler.add_job(itr, 'interval', seconds=10, max_instances=1)
 scheduler.add_job(trello, 'interval', seconds=5, max_instances=1)
 
 
-@app.route('/')  # main redirect
+@app.route('/')
 @app.route('/dashboard')
 def dashboard():
     """Render Dashboard redirect function."""
-    scheduler.start()  # start scheduler
-    return render_template('dashboard.html')  # render dashboard
+    scheduler.start()
+    return render_template('dashboard.html')
 
 
 if __name__ == '__main__':
