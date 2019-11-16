@@ -31,7 +31,8 @@ filters = {'all': ('sysparm_query=assignment_group=55e7ddcd0a0a3d280047abc06e'
                               'AMEAScaller_id.user_name'),
            'unassigned': ('sysparm_query=active=true^assignment_group='
                           '55e7ddcd0a0a3d280047abc06ed844c8^assigned_t'
-                          'oISEMPTY')}
+                          'oISEMPTY'),
+            'stale': ('assignment_group=55e7ddcd0a0a3d280047abc06ed844c8^incident_state=1^ORincident_state=2^ORincident_state=4^ORincident_state=5^ORincident_state=3^incident_state!=6^ORincident_state!=7^sys_updated_on<javascript:gs.daysAgo(3)')}
 
 
 def get_tickets(filter_str):
@@ -147,7 +148,11 @@ def high_priority():
     client_updated = [(ticket, 0) for ticket in client_updated]
     # combine unassigned and client updated tickets into a set, turn into list
     # removes exact duplicate tickets, but not those with different priorities
-    all_tickets = list(set(unassigned + client_updated))
+
+    stale = get_tickets(filters['stale'])
+    stale = [(ticket, 2) for ticket in stale]
+
+    all_tickets = list(set(unassigned + client_updated + stale))
     # need to remove the same tickets with different priorities
     # always favor the higher priority
     ticket_no_dupes = {}
