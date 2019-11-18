@@ -52,9 +52,9 @@ $(document).ready(function() {
     $('#tickets').empty(); // empty tickets div
     var tickets = msg['tickets'];
     for(var i = 0; i < tickets.length; i++) {
-      if(tickets[i]['priority'] == 1) { // add ticket to table based on priority
+      if(tickets[i]['priority'] == 0) { // add ticket to table based on priority
         $('#tickets').append("<tr><td class='is-size-3 has-background-danger'>" + tickets[i]['ticket_name'] + "</td></tr>");
-      } else if(tickets[i]['priority'] == 0) {
+      } else if(tickets[i]['priority'] == 1) {
         $('#tickets').append("<tr><td class='is-size-3 has-background-warning'>" + tickets[i]['ticket_name'] + "</td></tr>");
       } else if(tickets[i]['priority'] == 2) {
         $('#tickets').append("<tr><td class='is-size-3 has-background-info'>" + tickets[i]['ticket_name'] + "</td></tr>");
