@@ -1,5 +1,5 @@
 // initialization
-$(document).ready(function(){
+$(document).ready(function() {
   // connect to Flask socket
   var socket = io.connect("http://" + document.domain + ":" + location.port);
 
@@ -16,6 +16,19 @@ $(document).ready(function(){
       elem.append("<p class='is-size-3'>Remember to clock in!</p>");
     }
   });
+
+  // update water day display
+  socket.on('water', function(msg) {
+    var elem = $('#water');
+    elem.empty();
+    if (msg === true) {
+      elem.append(
+        "<span class='icon has-text-info'>" + 
+          "<i class='fas fa-tint'></i>" + 
+        "</span>"
+      );
+    }
+  })
 
   // when sheet event sent
   socket.on('sheets', function(msg) {
@@ -39,36 +52,14 @@ $(document).ready(function(){
     $('#tickets').empty(); // empty tickets div
     var tickets = msg['tickets'];
     for(var i = 0; i < tickets.length; i++) {
-      if(tickets[i]['priority'] == 1) { // add ticket to table based on priority
+      if(tickets[i]['priority'] == 0) { // add ticket to table based on priority
         $('#tickets').append("<tr><td class='is-size-3 has-background-danger'>" + tickets[i]['ticket_name'] + "</td></tr>");
-      } else if(tickets[i]['priority'] == 0) {
+      } else if(tickets[i]['priority'] == 1) {
         $('#tickets').append("<tr><td class='is-size-3 has-background-warning'>" + tickets[i]['ticket_name'] + "</td></tr>");
+      } else if(tickets[i]['priority'] == 2) {
+        $('#tickets').append("<tr><td class='is-size-3 has-background-info'>" + tickets[i]['ticket_name'] + "</td></tr>");
       } else {
         $('#tickets').append("<tr><td class='is-size-3'>" + tickets[i]['ticket_name'] + "</td></tr>");
-      }
-    }
-  });
-
-  // when wiw event sent
-  socket.on("wiw", function(msg) {
-    // console.log("wiw", msg);
-    $("#wiw-rcc").empty(); // empty stevenson and rcc divs
-    $("#wiw-stevenson").empty();
-    for(var i = 0; i < msg.length; i++) { // append to corresponding div
-      if(msg[i]['loc'] == 'rcc') {
-        $("#wiw-rcc").append(
-        "<div class='column is-narrow'>" +
-          "<div class='box'>" +
-            "<p class='title is-4'>" + msg[i]['name'] + "</p>" +
-          "</div>" +
-        "</div>");
-      } else {
-        $("#wiw-stevenson").append(
-        "<div class='column is-narrow'>" +
-          "<div class='box'>" +
-            "<p class='title is-4'>" + msg[i]['name'] + "</p>" +
-          "</div>" +
-        "</div>");
       }
     }
   });

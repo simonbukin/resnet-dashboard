@@ -78,6 +78,35 @@ def authenticate_and_get_events():
     return events
 
 
+def water_status(events):
+    """Returns a boolean indicating if it is water day or not."""
+    if not events:
+        return False
+    else:
+        for event in events:
+            name = event['summary'].lower()
+            if ('water' in name) and ('deliver' in name):
+                print(f'event name: {name}')
+                return True
+    return False
+
+
+def write_water_status():
+    redis = open_redis_connection()
+    events = authenticate_and_get_events()
+    status = water_status(events)
+    converted = 1 if status else 0
+    print(f'converted: {converted}')
+    redis.set('water', converted, ex=20)
+
+
+def read_water_status():
+    """Read number of housecalls from Redis."""
+    redis = open_redis_connection()
+    water = redis.get('water')
+    return water
+
+
 def housecall_status(events):
     """Returns how many housecalls there are on the calendar."""
     if not events:  # no events means no housecalls

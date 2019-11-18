@@ -1,10 +1,10 @@
 """Get tickets from ServiceNow."""
 from datetime import datetime
 import json
+import operator
 
 import requests
 
-from _utils import json_file
 from auth.auth import user, password
 from _redis import open_redis_connection
 
@@ -32,12 +32,8 @@ filters = {'all': ('sysparm_query=assignment_group=55e7ddcd0a0a3d280047abc06e'
                               'AMEAScaller_id.user_name'),
            'unassigned': ('sysparm_query=active=true^assignment_group='
                           '55e7ddcd0a0a3d280047abc06ed844c8^assigned_t'
-                          'oISEMPTY')}
-
-
-def itr_json():
-    """Write all the high priority tickets to itr.json."""
-    json_file(high_priority(), 'itr.json')
+                          'oISEMPTY'),
+            'stale': ('sysparm_query=assignment_group=55e7ddcd0a0a3d280047abc06ed844c8^incident_state=1^ORincident_state=2^ORincident_state=4^ORincident_state=5^ORincident_state=3^incident_state!=6^ORincident_state!=7^sys_updated_on<javascript:gs.daysAgo(3)^caller_id!=67c139b309641440fa07e749fee81bd7^caller_id!=c5c2b5f309641440fa07e749fee81b40')}
 
 
 def get_tickets(filter_str):
@@ -146,14 +142,18 @@ def high_priority():
     # get all unassigned tickets
     unassigned = get_tickets(filters['unassigned'])
     # make an array of tuples, 2nd index being priority
-    unassigned = [(ticket, 1) for ticket in unassigned]
+    unassigned = [(ticket, 0) for ticket in unassigned]
     # get all client updated tickets
     client_updated = get_tickets(filters['client_updated'])
     # make an array of tuples, 2nd index being priority
-    client_updated = [(ticket, 0) for ticket in client_updated]
+    client_updated = [(ticket, 1) for ticket in client_updated]
     # combine unassigned and client updated tickets into a set, turn into list
     # removes exact duplicate tickets, but not those with different priorities
-    all_tickets = list(set(unassigned + client_updated))
+
+    stale = get_tickets(filters['stale'])
+    stale = [(ticket, 2) for ticket in stale]
+
+    all_tickets = list(set(unassigned + client_updated + stale))
     # need to remove the same tickets with different priorities
     # always favor the higher priority
     ticket_no_dupes = {}
@@ -171,7 +171,7 @@ def high_priority():
     # key being the name of the ticket, value being it's priority
     # this returns an array of dicts
     tickets_out['tickets'] = []
-    for key, val in ticket_no_dupes.items():
+    for key, val in sorted(ticket_no_dupes.items(), key=lambda x: x[1]):
         tickets_out['tickets'].append({'ticket_name': str(key),
                                        'priority': str(val)})
     return tickets_out
