@@ -21,11 +21,11 @@ $(document).ready(function() {
   socket.on('water', function(msg) {
     var elem = $('#water');
     elem.empty();
-    if (msg === true) {
+    if (msg === 1) {
       elem.append(
-        "<span class='icon has-text-info'>" + 
-          "<i class='fas fa-tint'></i>" + 
-        "</span>"
+        "<div class='notification is-info'>" + 
+          "<h3 class='title is-3'>It is water day</h3>" + 
+        "</div>"
       );
     }
   })

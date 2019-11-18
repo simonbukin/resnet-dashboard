@@ -86,7 +86,7 @@ def water_status(events):
         for event in events:
             name = event['summary'].lower()
             if ('water' in name) and ('deliver' in name):
-                print(f'event name: {name}')
+                print('event name: {}'.format(name))
                 return True
     return False
 
@@ -96,7 +96,6 @@ def write_water_status():
     events = authenticate_and_get_events()
     status = water_status(events)
     converted = 1 if status else 0
-    print(f'converted: {converted}')
     redis.set('water', converted, ex=20)
 
 

@@ -23,10 +23,10 @@ def calendar():
     write_housecalls()
     housecalls = int(read_housecalls())
     write_water_status()
-    status = bool(read_water_status())
-    status_string = 'not' if not status else ''
+    status = int(read_water_status())
+    status_string = ' not' if not status else ''
     print('[Google Calendar]: {} housecalls'.format(housecalls))
-    print('[Google Calendar]: It is {} water day'.format(status_string))
+    print('[Google Calendar]: It is{} water day'.format(status_string))
     socketio.emit('calendar', housecalls, broadcast=True)
     socketio.emit('water', status, broadcast=True)
 
