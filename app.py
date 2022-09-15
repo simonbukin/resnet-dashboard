@@ -63,9 +63,9 @@ def trello():
 """Job Scheduling"""
 scheduler = BackgroundScheduler()
 # configure each job (how often it runs)
-scheduler.add_job(calendar, 'interval', seconds=5, max_instances=1)
+#scheduler.add_job(calendar, 'interval', seconds=5, max_instances=1)
 scheduler.add_job(itr, 'interval', seconds=10, max_instances=1)
-scheduler.add_job(trello, 'interval', seconds=5, max_instances=1)
+#scheduler.add_job(trello, 'interval', seconds=5, max_instances=1)
 
 
 @app.route('/')

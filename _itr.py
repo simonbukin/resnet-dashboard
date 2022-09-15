@@ -21,9 +21,7 @@ filters = {'all': ('sysparm_query=assignment_group=55e7ddcd0a0a3d280047abc06e'
                    'te=3^ORincident_state=4^ORincident_state=5^incident_state'
                    '=6^ORincident_state!=7'),
            'first_contact': ('sysparm_query=active=true^task.active=true^'
-                             'task.assignment_group=javascript:getMyGroup'
-                             's()^task.state!=-5^sla=562982570a0a3d280039'
-                             '8d4204b0fda1'),
+                             'assignment_group=55e7ddcd0a0a3d280047abc06ed844c8^task.state!=-5^sla=562982570a0a3d2800398d4204b0fda1'),
            'client_updated': ('sysparm_query=assignment_group=55e7ddcd0a0'
                               'a3d280047abc06ed844c8^incident_state=1^ORi'
                               'ncident_state=2^ORincident_state=3^ORincid'
@@ -141,6 +139,11 @@ def high_priority():
     """Return all the high priority tickets in the queue."""
     # get all unassigned tickets
     unassigned = get_tickets(filters['unassigned'])
+
+    # potential fix path
+    #fc = get_tickets(filters['first_contact'])
+    #unassigned += fc
+
     # make an array of tuples, 2nd index being priority
     unassigned = [(ticket, 0) for ticket in unassigned]
     # get all client updated tickets
@@ -160,7 +163,7 @@ def high_priority():
     for ticket in all_tickets:
         # TODO check this if V
         if ticket[0] in ticket_no_dupes:  # if ticket already processed
-            if ticket[1] > ticket_no_dupes[ticket[0]]:
+            if ticket[1] < ticket_no_dupes[ticket[0]]:
                 # check if new ticket has higher priority
                 ticket_no_dupes[ticket[0]] = ticket[1]
                 # update to higher priority
